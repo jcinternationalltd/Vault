@@ -194,7 +194,7 @@ const msalConfig = {
   auth: {
     clientId: AZURE_CONFIG.clientId,
     authority: `https://login.microsoftonline.com/${AZURE_CONFIG.tenantId}`,
-    redirectUri: window.location.href.split('?')[0].split('#')[0],
+    redirectUri: 'https://jcinternationalltd.github.io/Vault/',
   },
   cache: { cacheLocation: 'localStorage', storeAuthStateInCookie: true },
 };
@@ -769,7 +769,81 @@ function renderLightbox(){
 // =====================================================
 // BOOT
 // =====================================================
-handleRedirect().then(render);
+async function boot() {
+  // Check if opened as a local file — this will never work with MSAL
+  if (window.location.protocol === 'file:') {
+    document.getElementById('app').innerHTML = `
+      <header class="hdr"><div class="logo">The <em>Vault</em></div></header>
+      <div class="login-wrap">
+        <div class="login-box" style="text-align:left">
+          <div class="eyebrow">Setup Required</div>
+          <div class="big-title" style="margin-bottom:20px">One More Step</div>
+          <div style="font-size:12px;line-height:2;color:var(--muted);letter-spacing:1px">
+            <p style="margin-bottom:16px">This app is currently open as a <b style="color:var(--danger)">local file</b> (<code style="background:#eee;padding:2px 6px;font-size:11px">file://...</code>).</p>
+            <p style="margin-bottom:16px">Microsoft login <b>requires the app to be hosted on a web address</b> (http:// or https://) — it will not work when opened directly from your hard drive.</p>
+            <div style="background:var(--cream);border:1px solid var(--border);padding:16px 20px;margin-bottom:20px">
+              <div style="font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:10px">Quickest Solution — SharePoint</div>
+              <ol style="padding-left:18px;line-height:2.2;font-size:12px">
+                <li>Go to your company <b>SharePoint</b> site</li>
+                <li>Upload this HTML file to any document library</li>
+                <li>Open the file from SharePoint in your browser</li>
+                <li>Copy the URL and share it with your team</li>
+              </ol>
+            </div>
+            <p style="font-size:11px;color:var(--muted)">Once hosted, all your employees can access it from that URL using their Microsoft login.</p>
+          </div>
+        </div>
+      </div>`;
+    return;
+  }
+
+  // Check if MSAL loaded correctly
+  if (typeof msal === 'undefined') {
+    document.getElementById('app').innerHTML = `
+      <div style="display:flex;align-items:center;justify-content:center;height:100vh;flex-direction:column;gap:16px;padding:40px;text-align:center">
+        <div style="font-size:32px">⚠️</div>
+        <div style="font-family:'Cormorant Garamond',serif;font-size:24px">No Internet Connection</div>
+        <div style="font-size:12px;color:var(--muted);letter-spacing:1px;max-width:400px;line-height:1.8">
+          The Microsoft login library could not be loaded. Please check your internet connection and refresh the page.
+        </div>
+      </div>`;
+    return;
+  }
+
+  try {
+    await handleRedirect();
+    render();
+  } catch(e) {
+    // Show a friendly diagnostic screen
+    const isRedirectError = e.message && e.message.includes('redirect');
+    const isConfigError   = e.message && (e.message.includes('client') || e.message.includes('tenant'));
+    document.getElementById('app').innerHTML = `
+      <header class="hdr"><div class="logo">The <em>Vault</em></div></header>
+      <div class="login-wrap">
+        <div class="login-box" style="text-align:left">
+          <div class="eyebrow" style="color:var(--danger)">Authentication Error</div>
+          <div class="big-title" style="margin-bottom:20px">Cannot Sign In</div>
+          <div style="font-size:12px;line-height:2;color:var(--muted);letter-spacing:1px">
+            ${isRedirectError ? `
+            <p style="margin-bottom:16px">The <b>Redirect URI</b> in your Azure app registration doesn't match this page's address.</p>
+            <div style="background:var(--cream);border:1px solid var(--border);padding:14px 18px;margin-bottom:16px">
+              <div style="font-size:9px;letter-spacing:2px;color:var(--gold);margin-bottom:6px">ADD THIS URI IN AZURE PORTAL</div>
+              <code style="font-size:11px;word-break:break-all;color:var(--charcoal)">${window.location.href.split('?')[0].split('#')[0]}</code>
+            </div>
+            <p style="font-size:11px">Go to Azure Portal → App Registrations → The Vault → Authentication → Add the URI above under Single-page application.</p>
+            ` : `
+            <p style="margin-bottom:12px">An error occurred during Microsoft authentication.</p>
+            <div style="background:#FDF0F0;border:1px solid #E0C0C0;padding:12px 16px;font-size:11px;color:var(--danger);word-break:break-all;margin-bottom:16px">${e.message}</div>
+            <p style="font-size:11px">Please check your Azure app registration settings or contact your IT administrator.</p>
+            `}
+          </div>
+          <button onclick="location.reload()" style="margin-top:20px;width:100%;background:var(--charcoal);color:var(--gold-light);border:none;padding:13px;font-family:'Montserrat',sans-serif;font-size:11px;letter-spacing:3px;text-transform:uppercase;cursor:pointer">Try Again</button>
+        </div>
+      </div>`;
+  }
+}
+
+boot();
 </script>
 </body>
 </html>
