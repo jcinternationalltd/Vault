@@ -355,12 +355,13 @@ var msalApp = null;
 function createMsalApp() {
   return new msal.PublicClientApplication({
     auth: {
-      clientId:    CLIENT_ID,
-      authority:   'https://login.microsoftonline.com/' + TENANT_ID,
-      redirectUri: 'https://jcinternationalltd.github.io/Vault/'
+      clientId:        CLIENT_ID,
+      authority:       'https://login.microsoftonline.com/' + TENANT_ID,
+      redirectUri:     'https://jcinternationalltd.github.io/Vault/',
+      knownAuthorities: ['login.microsoftonline.com']
     },
     cache: {
-      cacheLocation:        'localStorage',
+      cacheLocation:          'localStorage',
       storeAuthStateInCookie: true
     }
   });
@@ -654,12 +655,9 @@ function renderLogin() {
   var logoSpan = document.createElement('span');
   logoSpan.innerHTML = msLogoHTML;
 
-  var btnContent = S.loginLoading
-    ? [h('span', {'class':'spin'}), 'Signing in…']
-    : [logoSpan.firstChild, 'Sign in with Microsoft'];
-
-  var btn = h('button', {'class':'ms-btn', onmouseup: signIn, disabled: S.loginLoading || undefined});
+  var btn = h('button', {'class':'ms-btn', onclick: signIn});
   if (S.loginLoading) {
+    btn.disabled = true;
     btn.appendChild(h('span', {'class':'spin'}));
     btn.appendChild(document.createTextNode('Signing in…'));
   } else {
