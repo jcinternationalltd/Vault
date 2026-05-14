@@ -5,15 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>The Vault — Product Image Database</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
-<!-- Microsoft Authentication Library -->
 <script src="https://alcdn.msauth.net/browser/2.38.3/js/msal-browser.min.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
   --cream:#F5F0E8;--warm-white:#FDFAF5;--charcoal:#1C1C1C;
   --gold:#B8985A;--gold-light:#D4B97A;--muted:#8A8070;
-  --border:#E0D8CC;--surface:#FFFFFF;--danger:#8B3A3A;
-  --green:#3A6B4A;--blue:#2D5A8A;
+  --border:#E0D8CC;--surface:#FFFFFF;--danger:#8B3A3A;--blue:#2D5A8A;
 }
 html,body{height:100%;background:var(--cream);color:var(--charcoal);font-family:'Montserrat',sans-serif;font-weight:300}
 #app{display:flex;flex-direction:column;min-height:100vh}
@@ -25,29 +23,27 @@ html,body{height:100%;background:var(--cream);color:var(--charcoal);font-family:
 .hdr-r{display:flex;align-items:center;gap:14px}
 .badge{font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);border:1px solid #333;padding:6px 14px;display:flex;align-items:center;gap:8px}
 .badge b{color:var(--gold-light)}
-.role-pill{font-size:9px;letter-spacing:2px;padding:2px 7px;border-radius:2px;text-transform:uppercase}
+.role-pill{font-size:9px;letter-spacing:2px;padding:2px 8px;border-radius:2px;text-transform:uppercase;font-weight:500}
 .role-pill.admin{background:var(--gold);color:var(--charcoal)}
-.role-pill.editor{background:#2D5A8A;color:#fff}
+.role-pill.editor{background:var(--blue);color:#fff}
 .role-pill.viewer{background:#444;color:#aaa}
 .btn-sm{background:none;border:1px solid #444;color:#888;padding:6px 14px;font-family:'Montserrat',sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all .2s}
 .btn-sm:hover{border-color:var(--gold);color:var(--gold)}
-.btn-sm.active{border-color:var(--gold);color:var(--gold-light);background:rgba(184,152,90,.1)}
 
 /* LOGIN */
 .login-wrap{flex:1;display:flex;align-items:center;justify-content:center;padding:40px;background:var(--cream)}
 .login-box{background:var(--surface);border:1px solid var(--border);padding:60px 50px;max-width:460px;width:100%;box-shadow:0 4px 40px rgba(0,0,0,.06);text-align:center}
 .eyebrow{font-size:10px;letter-spacing:4px;text-transform:uppercase;color:var(--gold);margin-bottom:12px}
 .big-title{font-family:'Cormorant Garamond',serif;font-size:42px;font-weight:300;margin-bottom:10px;line-height:1}
-.sub{font-size:12px;color:var(--muted);letter-spacing:1px;margin-bottom:40px;line-height:1.7}
-.ms-btn{display:flex;align-items:center;justify-content:center;gap:14px;width:100%;background:#fff;border:1px solid #d0d0d0;padding:14px 20px;font-family:'Montserrat',sans-serif;font-size:12px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all .25s;color:var(--charcoal);box-shadow:0 2px 8px rgba(0,0,0,.06)}
+.sub{font-size:12px;color:var(--muted);letter-spacing:1px;margin-bottom:40px;line-height:1.8}
+.ms-btn{display:flex;align-items:center;justify-content:center;gap:14px;width:100%;background:#fff;border:1px solid #d0d0d0;padding:15px 20px;font-family:'Montserrat',sans-serif;font-size:12px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all .25s;color:var(--charcoal);box-shadow:0 2px 8px rgba(0,0,0,.06)}
 .ms-btn:hover{border-color:var(--gold);box-shadow:0 4px 16px rgba(184,152,90,.15);background:#FDFAF5}
 .ms-btn:disabled{opacity:.5;cursor:not-allowed}
-.ms-logo{width:22px;height:22px;flex-shrink:0}
-.login-note{margin-top:24px;font-size:11px;color:var(--muted);letter-spacing:1px;line-height:1.7}
-.err{font-size:12px;color:var(--danger);margin-top:16px;padding:10px;background:#FDF0F0;border:1px solid #E0C0C0}
+.login-note{margin-top:20px;font-size:11px;color:var(--muted);letter-spacing:1px;line-height:1.8}
+.err-box{font-size:12px;color:var(--danger);margin-top:16px;padding:12px 16px;background:#FDF0F0;border:1px solid #E0C0C0;text-align:left;line-height:1.8}
 
 /* TABS */
-.tabs{background:var(--surface);border-bottom:1px solid var(--border);padding:0 40px;display:flex;gap:0}
+.tabs{background:var(--surface);border-bottom:1px solid var(--border);padding:0 40px;display:flex}
 .tab{padding:14px 24px;font-size:10px;letter-spacing:3px;text-transform:uppercase;cursor:pointer;border-bottom:2px solid transparent;color:var(--muted);transition:all .2s;background:none;border-top:none;border-left:none;border-right:none;font-family:'Montserrat',sans-serif}
 .tab:hover{color:var(--charcoal)}
 .tab.active{color:var(--gold);border-bottom-color:var(--gold)}
@@ -145,10 +141,10 @@ select.inp{appearance:none;background-image:url("data:image/svg+xml,%3Csvg width
 .spin{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.3);border-top-color:var(--gold);border-radius:50%;animation:sp .7s linear infinite;vertical-align:middle;margin-right:6px}
 @keyframes sp{to{transform:rotate(360deg)}}
 
-/* ADMIN PANEL */
+/* ADMIN */
 .admin-wrap{padding:28px 40px;flex:1}
 .admin-section{background:var(--surface);border:1px solid var(--border);margin-bottom:24px}
-.admin-section-hdr{padding:16px 22px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.admin-section-hdr{padding:16px 22px;border-bottom:1px solid var(--border)}
 .admin-section-title{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:400;letter-spacing:1px}
 .admin-section-sub{font-size:11px;color:var(--muted);letter-spacing:1px;margin-top:2px}
 .user-table{width:100%;border-collapse:collapse}
@@ -156,7 +152,7 @@ select.inp{appearance:none;background-image:url("data:image/svg+xml,%3Csvg width
 .user-table td{padding:13px 22px;border-bottom:1px solid var(--border);font-size:12px;vertical-align:middle}
 .user-table tr:last-child td{border-bottom:none}
 .user-table tr:hover td{background:var(--warm-white)}
-.role-sel{border:1px solid var(--border);background:var(--warm-white);padding:5px 10px;font-family:'Montserrat',sans-serif;font-size:11px;color:var(--charcoal);outline:none;cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg width='8' height='5' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%238A8070' stroke-width='1.5'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 8px center;padding-right:24px;background-color:var(--warm-white)}
+.role-sel{border:1px solid var(--border);background:var(--warm-white);padding:5px 24px 5px 10px;font-family:'Montserrat',sans-serif;font-size:11px;color:var(--charcoal);outline:none;cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg width='8' height='5' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%238A8070' stroke-width='1.5'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 8px center;background-color:var(--warm-white)}
 .activity-row{padding:12px 22px;border-bottom:1px solid var(--border);font-size:12px;display:flex;align-items:flex-start;gap:14px}
 .activity-row:last-child{border-bottom:none}
 .act-ico{font-size:16px;margin-top:1px;flex-shrink:0}
@@ -166,663 +162,886 @@ select.inp{appearance:none;background-image:url("data:image/svg+xml,%3Csvg width
 .stat-card{text-align:center;padding:20px;background:var(--cream);border:1px solid var(--border)}
 .stat-num{font-family:'Cormorant Garamond',serif;font-size:40px;font-weight:300;color:var(--gold);line-height:1}
 .stat-lbl{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-top:6px}
-.viewer-notice{padding:60px 40px;text-align:center;color:var(--muted)}
-.viewer-notice h3{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:300;color:var(--charcoal);margin-bottom:8px;margin-top:12px}
-.viewer-notice p{font-size:12px;letter-spacing:1px;line-height:1.8}
 
 @media(max-width:600px){
-  .hdr{padding:0 16px}.toolbar,.tabs{padding-left:16px;padding-right:16px}
-  .grid-wrap,.admin-wrap{padding:16px}.form-row{grid-template-columns:1fr}
+  .hdr{padding:0 16px}
+  .toolbar,.tabs{padding-left:16px;padding-right:16px}
+  .grid-wrap,.admin-wrap{padding:16px}
+  .form-row{grid-template-columns:1fr}
   .modal-hdr,.modal-body,.modal-ftr{padding-left:16px;padding-right:16px}
   .login-box{padding:36px 24px}
 }
 </style>
 </head>
 <body>
-<div id="app"><div style="display:flex;align-items:center;justify-content:center;height:100vh;font-size:12px;letter-spacing:2px;color:#8A8070">LOADING THE VAULT…</div></div>
+
+<!-- Initial loading screen shown before JS runs -->
+<div id="app">
+  <header class="hdr">
+    <div class="logo">The <em>Vault</em></div>
+  </header>
+  <div class="login-wrap">
+    <div class="login-box">
+      <div class="eyebrow">Product Image Database</div>
+      <div class="big-title">The Vault</div>
+      <div class="sub">Loading Microsoft login…</div>
+      <div style="display:flex;justify-content:center;padding:10px 0">
+        <div style="width:28px;height:28px;border:3px solid var(--border);border-top-color:var(--gold);border-radius:50%;animation:sp .8s linear infinite"></div>
+      </div>
+    </div>
+  </div>
+</div>
 
 <script>
-// =====================================================
-// AZURE AD CONFIGURATION
-// =====================================================
-const AZURE_CONFIG = {
-  clientId: '37ac80f6-8ceb-4588-bc18-5106c74901b2',
-  tenantId: 'ad762713-64b8-4d19-b5cf-309d7d422ee2',
-};
+'use strict';
 
-const msalConfig = {
-  auth: {
-    clientId: AZURE_CONFIG.clientId,
-    authority: `https://login.microsoftonline.com/${AZURE_CONFIG.tenantId}`,
-    redirectUri: 'https://jcinternationalltd.github.io/Vault/',
-  },
-  cache: { cacheLocation: 'localStorage', storeAuthStateInCookie: true },
-};
+// ─────────────────────────────────────────────
+// CONFIGURATION
+// ─────────────────────────────────────────────
+var CLIENT_ID = '37ac80f6-8ceb-4588-bc18-5106c74901b2';
+var TENANT_ID = 'ad762713-64b8-4d19-b5cf-309d7d422ee2';
 
-const msalInstance = new msal.PublicClientApplication(msalConfig);
-const loginRequest = { scopes: ['User.Read', 'openid', 'profile', 'email'] };
+var LEATHER_OPTIONS = ['Calfskin','Lambskin','Saffiano','Pebbled','Suede','Patent','Exotic','Vegan','Full Grain','Top Grain'];
+var TYPE_OPTIONS    = ['Tote','Shoulder Bag','Crossbody','Clutch','Backpack','Satchel','Hobo','Mini Bag','Belt Bag','Bifold Wallet','Trifold Wallet','Card Holder','Zip Wallet','Long Wallet'];
+var SEX_OPTIONS     = ["Women's","Men's","Unisex"];
+var COLOUR_OPTIONS  = ['Black','White','Tan','Camel','Cognac','Navy','Burgundy','Red','Pink','Green','Grey','Brown','Cream','Gold','Silver','Multi'];
+var ROLES           = ['admin','editor','viewer'];
 
-// =====================================================
-// DATA OPTIONS
-// =====================================================
-const LEATHER_OPTIONS = ['Calfskin','Lambskin','Saffiano','Pebbled','Suede','Patent','Exotic','Vegan','Full Grain','Top Grain'];
-const TYPE_OPTIONS    = ['Tote','Shoulder Bag','Crossbody','Clutch','Backpack','Satchel','Hobo','Mini Bag','Belt Bag','Bifold Wallet','Trifold Wallet','Card Holder','Zip Wallet','Long Wallet'];
-const SEX_OPTIONS     = ['Women\'s','Men\'s','Unisex'];
-const COLOUR_OPTIONS  = ['Black','White','Tan','Camel','Cognac','Navy','Burgundy','Red','Pink','Green','Grey','Brown','Cream','Gold','Silver','Multi'];
-const ROLES           = ['admin','editor','viewer'];
+// ─────────────────────────────────────────────
+// LOCAL STORAGE
+// ─────────────────────────────────────────────
+var K_PRODUCTS  = 'vault:products';
+var K_USERS     = 'vault:users';
+var K_ACTIVITY  = 'vault:activity';
 
-// =====================================================
-// LOCAL STORAGE DB
-// =====================================================
-const DB = {
-  get(k){ try{ const v=localStorage.getItem(k); return v?JSON.parse(v):null; }catch{ return null; } },
-  set(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); }catch{} },
-};
-const K_PRODUCTS  = 'vault:products';
-const K_USERS     = 'vault:users';
-const K_ACTIVITY  = 'vault:activity';
-
-function getProducts(){ return DB.get(K_PRODUCTS)||{}; }
-function setProducts(p){ DB.set(K_PRODUCTS,p); }
-function getUsers(){ return DB.get(K_USERS)||{}; }
-function setUsers(u){ DB.set(K_USERS,u); }
-function getActivity(){ return DB.get(K_ACTIVITY)||[]; }
-function logActivity(type, detail, user){
-  const log = getActivity();
-  log.unshift({ type, detail, user, time: Date.now() });
-  if(log.length>200) log.splice(200);
-  DB.set(K_ACTIVITY, log);
+function dbGet(k) {
+  try { var v = localStorage.getItem(k); return v ? JSON.parse(v) : null; } catch(e) { return null; }
 }
+function dbSet(k, v) {
+  try { localStorage.setItem(k, JSON.stringify(v)); } catch(e) {}
+}
+function getProducts()  { return dbGet(K_PRODUCTS)  || {}; }
+function getUsers()     { return dbGet(K_USERS)     || {}; }
+function getActivity()  { return dbGet(K_ACTIVITY)  || []; }
 
-// Ensure a user exists in our DB; first user ever becomes admin
-function ensureUser(msUser){
-  const users = getUsers();
-  const id = msUser.localAccountId || msUser.homeAccountId;
-  if(!users[id]){
-    const isFirst = Object.keys(users).length === 0;
-    users[id] = {
-      id, name: msUser.name||msUser.username,
-      email: msUser.username,
-      role: isFirst ? 'admin' : 'viewer',
-      firstSeen: Date.now(), lastSeen: Date.now(),
-    };
+function ensureUser(account) {
+  var users = getUsers();
+  var id    = account.localAccountId || account.homeAccountId;
+  var name  = account.name || account.username;
+  var email = account.username;
+  if (!users[id]) {
+    var isFirst = Object.keys(users).length === 0;
+    users[id] = { id:id, name:name, email:email, role: isFirst ? 'admin' : 'viewer', firstSeen:Date.now(), lastSeen:Date.now() };
   } else {
     users[id].lastSeen = Date.now();
-    users[id].name = msUser.name||msUser.username;
+    users[id].name     = name;
   }
-  setUsers(users);
+  dbSet(K_USERS, users);
   return users[id];
 }
 
-// =====================================================
+function logActivity(type, detail, userName) {
+  var log = getActivity();
+  log.unshift({ type:type, detail:detail, user:userName, time:Date.now() });
+  if (log.length > 200) log.length = 200;
+  dbSet(K_ACTIVITY, log);
+}
+
+// ─────────────────────────────────────────────
 // STATE
-// =====================================================
-let S = {
-  msAccount: null, vaultUser: null,
-  products:{}, search:'', filters:{leather:'',type:'',sex:'',colour:''},
-  tab:'products',  // 'products' | 'admin'
-  modal:null, selected:null, lightbox:null,
-  toast:null, toastTimer:null, saving:false, drag:false,
-  form:{styleNo:'',leather:'',dimensions:'',type:'',sex:'',colour:''},
-  pendingImages:[],
-  loginError:'',
+// ─────────────────────────────────────────────
+var S = {
+  msAccount:    null,
+  vaultUser:    null,
+  products:     {},
+  search:       '',
+  filters:      { leather:'', type:'', sex:'', colour:'' },
+  tab:          'products',
+  modal:        null,
+  selected:     null,
+  lightbox:     null,
+  toast:        null,
+  toastTimer:   null,
+  saving:       false,
+  loginLoading: false,
+  loginError:   '',
+  form:         { styleNo:'', leather:'', dimensions:'', type:'', sex:'', colour:'' },
+  pendingImages: []
 };
-function set(patch){ Object.assign(S,patch); render(); }
 
-// =====================================================
-// AUTH
-// =====================================================
-
-
-async function signIn(){
-  try{ await msalInstance.loginRedirect(loginRequest); }
-  catch(e){ set({ loginError: e.message }); }
+function setState(patch) {
+  Object.assign(S, patch);
+  render();
 }
 
-async function signOut(){
-  logActivity('logout','Signed out', S.vaultUser?.name);
-  await msalInstance.logoutRedirect({ postLogoutRedirectUri: window.location.href });
-}
+function canEdit() { return S.vaultUser && (S.vaultUser.role === 'admin' || S.vaultUser.role === 'editor'); }
+function isAdmin() { return S.vaultUser && S.vaultUser.role === 'admin'; }
 
-// =====================================================
-// HELPERS
-// =====================================================
-function showToast(msg){
-  if(S.toastTimer) clearTimeout(S.toastTimer);
-  const t = setTimeout(()=>set({toast:null,toastTimer:null}),3000);
-  set({toast:msg,toastTimer:t});
-}
-function readFile(f){ return new Promise((r,j)=>{ const fr=new FileReader(); fr.onload=()=>r(fr.result); fr.onerror=j; fr.readAsDataURL(f); }); }
+// ─────────────────────────────────────────────
+// MSAL — POPUP MODE
+// ─────────────────────────────────────────────
+var msalApp = null;
 
-async function handleFilesPending(files){
-  const imgs = await Promise.all(files.map(readFile));
-  set({ pendingImages:[...S.pendingImages,...files.map((f,i)=>({name:f.name,dataUrl:imgs[i]}))] });
-}
-
-function getFiltered(){
-  const q=S.search.toLowerCase();
-  return Object.values(S.products).filter(p=>{
-    const ms=!q||p.styleNo.toLowerCase().includes(q)||(p.colour||'').toLowerCase().includes(q)||(p.type||'').toLowerCase().includes(q)||(p.leather||'').toLowerCase().includes(q);
-    return ms&&(!S.filters.leather||p.leather===S.filters.leather)&&(!S.filters.type||p.type===S.filters.type)&&(!S.filters.sex||p.sex===S.filters.sex)&&(!S.filters.colour||p.colour===S.filters.colour);
+function createMsalApp() {
+  return new msal.PublicClientApplication({
+    auth: {
+      clientId:    CLIENT_ID,
+      authority:   'https://login.microsoftonline.com/' + TENANT_ID,
+      redirectUri: 'https://jcinternationalltd.github.io/Vault/'
+    },
+    cache: {
+      cacheLocation:        'localStorage',
+      storeAuthStateInCookie: true
+    }
   });
 }
 
-function canEdit(){ return S.vaultUser && (S.vaultUser.role==='admin'||S.vaultUser.role==='editor'); }
-function isAdmin(){ return S.vaultUser && S.vaultUser.role==='admin'; }
-
-// =====================================================
-// PRODUCT ACTIONS
-// =====================================================
-async function saveProduct(){
-  if(!S.form.styleNo.trim()){ showToast('Style number is required'); return; }
-  set({saving:true});
-  const key=S.form.styleNo.trim().toUpperCase();
-  const all=getProducts();
-  const ex=all[key]||{};
-  const newImgs=S.pendingImages.map(p=>p.dataUrl);
-  all[key]={
-    styleNo:key,leather:S.form.leather,dimensions:S.form.dimensions,
-    type:S.form.type,sex:S.form.sex,colour:S.form.colour,
-    images:[...(ex.images||[]),...newImgs],
-    updatedBy:S.vaultUser.name,updatedAt:Date.now(),
-    createdAt:ex.createdAt||Date.now(),createdBy:ex.createdBy||S.vaultUser.name,
-  };
-  setProducts(all);
-  logActivity('add',`Added style ${key}`,S.vaultUser.name);
-  set({products:all,modal:null,pendingImages:[],saving:false,form:{styleNo:'',leather:'',dimensions:'',type:'',sex:'',colour:''}});
-  showToast(`Style ${key} saved`);
+function signIn() {
+  if (!msalApp) { showToast('App not ready yet, please wait a moment'); return; }
+  setState({ loginLoading:true, loginError:'' });
+  msalApp.loginPopup({ scopes: ['User.Read', 'openid', 'profile', 'email'], prompt: 'select_account' })
+    .then(function(resp) {
+      if (resp && resp.account) {
+        msalApp.setActiveAccount(resp.account);
+        var vu = ensureUser(resp.account);
+        logActivity('login', 'Signed in', vu.name);
+        setState({ msAccount:resp.account, vaultUser:vu, products:getProducts(), loginLoading:false, loginError:'' });
+      } else {
+        setState({ loginLoading:false, loginError:'No account returned. Please try again.' });
+      }
+    })
+    .catch(function(err) {
+      var msg = 'Sign in failed. ';
+      if (err.message && err.message.indexOf('popup') !== -1) {
+        msg = 'Your browser blocked the popup. Please click "Allow" when prompted, or check your browser settings to allow popups for this site, then try again.';
+      } else if (err.message && err.message.indexOf('cancel') !== -1) {
+        msg = 'Sign in was cancelled. Please try again.';
+      } else if (err.message && err.message.indexOf('AADSTS') !== -1) {
+        msg = 'Microsoft returned an error: ' + err.message;
+      } else {
+        msg += (err.message || 'Unknown error. Please try again.');
+      }
+      setState({ loginLoading:false, loginError:msg });
+    });
 }
 
-async function saveEdit(){
-  set({saving:true});
-  const key=S.selected.styleNo;
-  const all=getProducts();
-  const ex=all[key]||S.selected;
-  const newImgs=S.pendingImages.map(p=>p.dataUrl);
-  all[key]={...ex,leather:S.form.leather,dimensions:S.form.dimensions,type:S.form.type,sex:S.form.sex,colour:S.form.colour,images:[...(ex.images||[]),...newImgs],updatedBy:S.vaultUser.name,updatedAt:Date.now()};
-  setProducts(all);
-  logActivity('edit',`Edited style ${key}`,S.vaultUser.name);
-  set({products:all,selected:all[key],modal:'detail',pendingImages:[],saving:false});
+function signOut() {
+  if (!msalApp || !S.msAccount) return;
+  logActivity('logout', 'Signed out', S.vaultUser ? S.vaultUser.name : '');
+  msalApp.logoutPopup({ account: S.msAccount })
+    .catch(function() {})
+    .finally(function() {
+      setState({ msAccount:null, vaultUser:null, products:{}, modal:null, tab:'products', loginError:'' });
+    });
+}
+
+// ─────────────────────────────────────────────
+// HELPERS
+// ─────────────────────────────────────────────
+function showToast(msg) {
+  if (S.toastTimer) clearTimeout(S.toastTimer);
+  var t = setTimeout(function() { setState({ toast:null, toastTimer:null }); }, 3000);
+  setState({ toast:msg, toastTimer:t });
+}
+
+function readFile(file) {
+  return new Promise(function(resolve, reject) {
+    var reader = new FileReader();
+    reader.onload  = function() { resolve(reader.result); };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+function handleFilesPending(files) {
+  var promises = Array.from(files).map(readFile);
+  Promise.all(promises).then(function(dataUrls) {
+    var newItems = Array.from(files).map(function(f, i) { return { name:f.name, dataUrl:dataUrls[i] }; });
+    setState({ pendingImages: S.pendingImages.concat(newItems) });
+  });
+}
+
+function getFiltered() {
+  var q = S.search.toLowerCase();
+  return Object.values(S.products).filter(function(p) {
+    var matchSearch = !q
+      || p.styleNo.toLowerCase().indexOf(q) !== -1
+      || (p.colour  || '').toLowerCase().indexOf(q) !== -1
+      || (p.type    || '').toLowerCase().indexOf(q) !== -1
+      || (p.leather || '').toLowerCase().indexOf(q) !== -1;
+    return matchSearch
+      && (!S.filters.leather || p.leather === S.filters.leather)
+      && (!S.filters.type    || p.type    === S.filters.type)
+      && (!S.filters.sex     || p.sex     === S.filters.sex)
+      && (!S.filters.colour  || p.colour  === S.filters.colour);
+  });
+}
+
+// ─────────────────────────────────────────────
+// PRODUCT ACTIONS
+// ─────────────────────────────────────────────
+function saveProduct() {
+  if (!S.form.styleNo.trim()) { showToast('Style number is required'); return; }
+  setState({ saving:true });
+  var key  = S.form.styleNo.trim().toUpperCase();
+  var all  = getProducts();
+  var ex   = all[key] || {};
+  var imgs = S.pendingImages.map(function(p) { return p.dataUrl; });
+  all[key] = {
+    styleNo:    key,
+    leather:    S.form.leather,
+    dimensions: S.form.dimensions,
+    type:       S.form.type,
+    sex:        S.form.sex,
+    colour:     S.form.colour,
+    images:     (ex.images || []).concat(imgs),
+    updatedBy:  S.vaultUser.name,
+    updatedAt:  Date.now(),
+    createdAt:  ex.createdAt  || Date.now(),
+    createdBy:  ex.createdBy  || S.vaultUser.name
+  };
+  dbSet(K_PRODUCTS, all);
+  logActivity('add', 'Added style ' + key, S.vaultUser.name);
+  setState({ products:all, modal:null, pendingImages:[], saving:false, form:{styleNo:'',leather:'',dimensions:'',type:'',sex:'',colour:''} });
+  showToast('Style ' + key + ' saved');
+}
+
+function saveEdit() {
+  setState({ saving:true });
+  var key  = S.selected.styleNo;
+  var all  = getProducts();
+  var ex   = all[key] || S.selected;
+  var imgs = S.pendingImages.map(function(p) { return p.dataUrl; });
+  all[key] = Object.assign({}, ex, {
+    leather:    S.form.leather,
+    dimensions: S.form.dimensions,
+    type:       S.form.type,
+    sex:        S.form.sex,
+    colour:     S.form.colour,
+    images:     (ex.images || []).concat(imgs),
+    updatedBy:  S.vaultUser.name,
+    updatedAt:  Date.now()
+  });
+  dbSet(K_PRODUCTS, all);
+  logActivity('edit', 'Edited style ' + key, S.vaultUser.name);
+  setState({ products:all, selected:all[key], modal:'detail', pendingImages:[], saving:false });
   showToast('Product updated');
 }
 
-function deleteImage(key,idx){
-  const all=getProducts();
-  all[key].images=all[key].images.filter((_,i)=>i!==idx);
-  setProducts(all);
-  logActivity('img-del',`Removed image from ${key}`,S.vaultUser.name);
-  set({products:all,selected:all[key]});
+function deleteImage(key, idx) {
+  var all = getProducts();
+  all[key].images = all[key].images.filter(function(_, i) { return i !== idx; });
+  dbSet(K_PRODUCTS, all);
+  logActivity('img-del', 'Removed image from ' + key, S.vaultUser.name);
+  setState({ products:all, selected:all[key] });
   showToast('Image removed');
 }
 
-function deleteProduct(key){
-  if(!confirm(`Delete style ${key}? This cannot be undone.`)) return;
-  const all=getProducts();
+function deleteProduct(key) {
+  if (!confirm('Delete style ' + key + '? This cannot be undone.')) return;
+  var all = getProducts();
   delete all[key];
-  setProducts(all);
-  logActivity('del',`Deleted style ${key}`,S.vaultUser.name);
-  set({products:all,modal:null,selected:null});
-  showToast(`Style ${key} deleted`);
+  dbSet(K_PRODUCTS, all);
+  logActivity('del', 'Deleted style ' + key, S.vaultUser.name);
+  setState({ products:all, modal:null, selected:null });
+  showToast('Style ' + key + ' deleted');
 }
 
-async function addImagesToExisting(key,files){
-  set({saving:true});
-  const all=getProducts();
-  const imgs=await Promise.all(files.map(readFile));
-  all[key].images=[...(all[key].images||[]),...imgs];
-  all[key].updatedAt=Date.now();all[key].updatedBy=S.vaultUser.name;
-  setProducts(all);
-  logActivity('img-add',`Added ${imgs.length} image(s) to ${key}`,S.vaultUser.name);
-  set({products:all,selected:all[key],saving:false});
-  showToast(`${imgs.length} image(s) added`);
+function addImagesToExisting(key, files) {
+  setState({ saving:true });
+  Promise.all(Array.from(files).map(readFile)).then(function(imgs) {
+    var all = getProducts();
+    all[key].images    = (all[key].images || []).concat(imgs);
+    all[key].updatedAt = Date.now();
+    all[key].updatedBy = S.vaultUser.name;
+    dbSet(K_PRODUCTS, all);
+    logActivity('img-add', 'Added ' + imgs.length + ' image(s) to ' + key, S.vaultUser.name);
+    setState({ products:all, selected:all[key], saving:false });
+    showToast(imgs.length + ' image(s) added');
+  });
 }
 
-function updateUserRole(userId, role){
-  const users=getUsers();
-  if(!users[userId]) return;
-  // Prevent removing the last admin
-  if(users[userId].role==='admin' && role!=='admin'){
-    const adminCount=Object.values(users).filter(u=>u.role==='admin').length;
-    if(adminCount<=1){ showToast('Cannot remove the last admin'); return; }
+function updateUserRole(userId, role) {
+  var users = getUsers();
+  if (!users[userId]) return;
+  if (users[userId].role === 'admin' && role !== 'admin') {
+    var adminCount = Object.values(users).filter(function(u) { return u.role === 'admin'; }).length;
+    if (adminCount <= 1) { showToast('Cannot remove the last admin'); return; }
   }
-  users[userId].role=role;
-  setUsers(users);
-  logActivity('role',`Changed ${users[userId].name}'s role to ${role}`,S.vaultUser.name);
-  if(userId===S.vaultUser.id){ set({vaultUser:{...S.vaultUser,role}}); }
-  else { render(); }
+  users[userId].role = role;
+  dbSet(K_USERS, users);
+  logActivity('role', "Changed " + users[userId].name + "'s role to " + role, S.vaultUser.name);
+  if (userId === S.vaultUser.id) {
+    setState({ vaultUser: Object.assign({}, S.vaultUser, { role:role }) });
+  } else {
+    render();
+  }
   showToast('Role updated');
 }
 
-// =====================================================
-// DOM HELPERS
-// =====================================================
-function h(tag,attrs={},...kids){
-  const el=document.createElement(tag);
-  for(const [k,v] of Object.entries(attrs)){
-    if(k==='class') el.className=v;
-    else if(k.startsWith('on')) el.addEventListener(k.slice(2).toLowerCase(),v);
-    else if(k==='style'&&typeof v==='object') Object.assign(el.style,v);
-    else el.setAttribute(k,v);
-  }
-  for(const c of kids.flat(2)){
-    if(c==null||c===false) continue;
-    el.appendChild(typeof c==='string'?document.createTextNode(c):c);
-  }
+// ─────────────────────────────────────────────
+// DOM HELPER
+// ─────────────────────────────────────────────
+function h(tag, attrs) {
+  var el   = document.createElement(tag);
+  var kids = Array.prototype.slice.call(arguments, 2);
+  attrs = attrs || {};
+  Object.keys(attrs).forEach(function(k) {
+    var v = attrs[k];
+    if (k === 'class')                   { el.className = v; }
+    else if (k.indexOf('on') === 0)      { el.addEventListener(k.slice(2).toLowerCase(), v); }
+    else if (k === 'style' && typeof v === 'object') { Object.assign(el.style, v); }
+    else if (k === 'disabled' && v)      { el.disabled = true; }
+    else if (k === 'checked'  && v)      { el.checked  = true; }
+    else if (k === 'selected' && v)      { el.selected = true; }
+    else                                 { el.setAttribute(k, v); }
+  });
+  kids.forEach(function append(c) {
+    if (c == null || c === false) return;
+    if (Array.isArray(c))        { c.forEach(append); return; }
+    el.appendChild(typeof c === 'string' ? document.createTextNode(c) : c);
+  });
   return el;
 }
-function fld(label,inp){ return h('div',{class:'fld'},h('label',{class:'lbl'},label),inp); }
-function sel(opts,val,onChange,ph=''){
-  const s=h('select',{class:'inp',onChange});
-  if(ph) s.appendChild(h('option',{value:''},ph));
-  opts.forEach(o=>{ const op=h('option',{value:o},o); if(o===val) op.selected=true; s.appendChild(op); });
+
+function fld(label, inputEl) {
+  return h('div', {'class':'fld'}, h('label', {'class':'lbl'}, label), inputEl);
+}
+
+function mkSelect(options, value, onChange, placeholder) {
+  var s = h('select', {'class':'inp', onchange:onChange});
+  if (placeholder) s.appendChild(h('option', {value:''}, placeholder));
+  options.forEach(function(o) {
+    var attrs = {value:o};
+    if (o === value) attrs.selected = true;
+    s.appendChild(h('option', attrs, o));
+  });
   return s;
 }
-function rolePill(role){ return h('span',{class:`role-pill ${role}`},role); }
 
-// =====================================================
+function rolePill(role) {
+  return h('span', {'class':'role-pill ' + role}, role);
+}
+
+function fileInput(multiple, onFiles) {
+  var fi = document.createElement('input');
+  fi.type     = 'file';
+  fi.multiple = multiple;
+  fi.accept   = 'image/*';
+  fi.style.display = 'none';
+  fi.addEventListener('change', function() { onFiles(Array.from(fi.files)); fi.value = ''; });
+  return fi;
+}
+
+function makeDZ(label, onFiles) {
+  var dz = h('div', {'class':'drop-zone'}, '📸 ', label);
+  dz.addEventListener('click', function() {
+    var fi = fileInput(true, onFiles);
+    document.body.appendChild(fi);
+    fi.click();
+    setTimeout(function() { document.body.removeChild(fi); }, 10000);
+  });
+  dz.addEventListener('dragover',  function(e) { e.preventDefault(); dz.classList.add('drag'); });
+  dz.addEventListener('dragleave', function()  { dz.classList.remove('drag'); });
+  dz.addEventListener('drop', function(e) {
+    e.preventDefault();
+    dz.classList.remove('drag');
+    var files = Array.from(e.dataTransfer.files).filter(function(f) { return f.type.indexOf('image/') === 0; });
+    onFiles(files);
+  });
+  return dz;
+}
+
+// ─────────────────────────────────────────────
 // RENDER
-// =====================================================
-function render(){
-  const root=document.getElementById('app');
-  root.innerHTML='';
-  if(!S.msAccount){ root.appendChild(renderLogin()); return; }
+// ─────────────────────────────────────────────
+function render() {
+  var root = document.getElementById('app');
+  root.innerHTML = '';
+
+  if (!S.msAccount) { root.appendChild(renderLogin()); return; }
+
   root.appendChild(renderHeader());
-  if(isAdmin()) root.appendChild(renderTabs());
-  if(S.tab==='admin'&&isAdmin()) root.appendChild(renderAdmin());
-  else root.appendChild(renderProductsView());
-  if(S.modal==='add') root.appendChild(renderAddModal());
-  if(S.modal==='detail'&&S.selected) root.appendChild(renderDetailModal());
-  if(S.modal==='edit'&&S.selected) root.appendChild(renderEditModal());
-  if(S.lightbox) root.appendChild(renderLightbox());
-  if(S.toast) root.appendChild(h('div',{class:'toast'},S.toast));
+  if (isAdmin()) root.appendChild(renderTabs());
+
+  if (S.tab === 'admin' && isAdmin()) {
+    root.appendChild(renderAdmin());
+  } else {
+    root.appendChild(renderToolbar());
+    root.appendChild(renderGrid());
+  }
+
+  if (S.modal === 'add')                        root.appendChild(renderAddModal());
+  if (S.modal === 'detail' && S.selected)       root.appendChild(renderDetailModal());
+  if (S.modal === 'edit'   && S.selected)       root.appendChild(renderEditModal());
+  if (S.lightbox)                               root.appendChild(renderLightbox());
+  if (S.toast)                                  root.appendChild(h('div', {'class':'toast'}, S.toast));
 }
 
-// ---- LOGIN ----
-function renderLogin(){
-  const msLogo=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 21 21" width="22" height="22"><rect x="1" y="1" width="9" height="9" fill="#F25022"/><rect x="11" y="1" width="9" height="9" fill="#7FBA00"/><rect x="1" y="11" width="9" height="9" fill="#00A4EF"/><rect x="11" y="11" width="9" height="9" fill="#FFB900"/></svg>`;
-  const logoEl=document.createElement('div');
-  logoEl.innerHTML=msLogo;
-  const btn=h('button',{class:'ms-btn',onClick:signIn},logoEl.firstChild,'Sign in with Microsoft');
-  const box=h('div',{class:'login-box'},
-    h('div',{class:'eyebrow'},'Product Image Database'),
-    h('div',{class:'big-title'},'The Vault'),
-    h('div',{class:'sub'},'Sign in with your company Microsoft account\nto access the product library.'),
+// ── Login ──
+function renderLogin() {
+  var msLogoHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 21 21" width="22" height="22"><rect x="1" y="1" width="9" height="9" fill="#F25022"/><rect x="11" y="1" width="9" height="9" fill="#7FBA00"/><rect x="1" y="11" width="9" height="9" fill="#00A4EF"/><rect x="11" y="11" width="9" height="9" fill="#FFB900"/></svg>';
+  var logoSpan = document.createElement('span');
+  logoSpan.innerHTML = msLogoHTML;
+
+  var btnContent = S.loginLoading
+    ? [h('span', {'class':'spin'}), 'Signing in…']
+    : [logoSpan.firstChild, 'Sign in with Microsoft'];
+
+  var btn = h('button', {'class':'ms-btn', onmouseup: signIn, disabled: S.loginLoading || undefined});
+  if (S.loginLoading) {
+    btn.appendChild(h('span', {'class':'spin'}));
+    btn.appendChild(document.createTextNode('Signing in…'));
+  } else {
+    var svg = document.createElement('span');
+    svg.innerHTML = msLogoHTML;
+    btn.appendChild(svg.firstChild);
+    btn.appendChild(document.createTextNode('Sign in with Microsoft'));
+  }
+
+  var box = h('div', {'class':'login-box'},
+    h('div',  {'class':'eyebrow'},   'Product Image Database'),
+    h('div',  {'class':'big-title'}, 'The Vault'),
+    h('div',  {'class':'sub'},       'Sign in with your JC International Microsoft account.'),
     btn,
-    S.loginError?h('div',{class:'err'},S.loginError):null,
-    h('div',{class:'login-note'},'Access is managed by your administrator.\nContact your admin if you cannot sign in.')
+    S.loginError ? h('div', {'class':'err-box'}, S.loginError) : null,
+    h('div', {'class':'login-note'}, 'A Microsoft sign-in popup will appear. If nothing happens, please allow popups for this site in your browser.')
   );
-  return h('div',{id:'app-inner'},
-    h('header',{class:'hdr'},h('div',{class:'logo'},'The ',h('em',{},'Vault'))),
-    h('div',{class:'login-wrap'},box)
+
+  return h('div', null,
+    h('header', {'class':'hdr'}, h('div', {'class':'logo'}, 'The ', h('em', null, 'Vault'))),
+    h('div', {'class':'login-wrap'}, box)
   );
 }
 
-// ---- HEADER ----
-function renderHeader(){
-  const u=S.vaultUser;
-  return h('header',{class:'hdr'},
-    h('div',{class:'logo'},'The ',h('em',{},'Vault')),
-    h('div',{class:'hdr-r'},
-      h('div',{class:'badge'},
-        h('span',{},'👤 '),h('b',{},u.name),
-        rolePill(u.role)
-      ),
-      h('button',{class:'btn-sm',onClick:signOut},'Sign Out')
+// ── Header ──
+function renderHeader() {
+  var u = S.vaultUser;
+  return h('header', {'class':'hdr'},
+    h('div', {'class':'logo'}, 'The ', h('em', null, 'Vault')),
+    h('div', {'class':'hdr-r'},
+      h('div', {'class':'badge'}, '👤 ', h('b', null, u.name), ' ', rolePill(u.role)),
+      h('button', {'class':'btn-sm', onclick:signOut}, 'Sign Out')
     )
   );
 }
 
-// ---- TABS ----
-function renderTabs(){
-  return h('div',{class:'tabs'},
-    h('button',{class:`tab${S.tab==='products'?' active':''}`,onClick:()=>set({tab:'products'})},'Products'),
-    h('button',{class:`tab${S.tab==='admin'?' active':''}`,onClick:()=>set({tab:'admin'})},'⚙ Admin')
+// ── Tabs ──
+function renderTabs() {
+  return h('div', {'class':'tabs'},
+    h('button', {'class':'tab' + (S.tab==='products' ? ' active' : ''), onclick:function(){setState({tab:'products'})}}, 'Products'),
+    h('button', {'class':'tab' + (S.tab==='admin'    ? ' active' : ''), onclick:function(){setState({tab:'admin'})}},    '⚙ Admin')
   );
 }
 
-// ---- PRODUCTS VIEW ----
-function renderProductsView(){
-  const wrap=h('div',{style:{display:'flex',flexDirection:'column',flex:'1'}});
-  wrap.appendChild(renderToolbar());
-  wrap.appendChild(renderGrid());
-  return wrap;
-}
-
-// ---- TOOLBAR ----
-function renderToolbar(){
-  const mkFlt=(ph,key,opts)=>{
-    const s=h('select',{class:'flt',onChange:e=>set({filters:{...S.filters,[key]:e.target.value}})});
-    s.appendChild(h('option',{value:''},ph));
-    opts.forEach(o=>{ const op=h('option',{value:o},o); if(S.filters[key]===o) op.selected=true; s.appendChild(op); });
+// ── Toolbar ──
+function renderToolbar() {
+  function mkFlt(ph, key, opts) {
+    var s = h('select', {'class':'flt', onchange:function(e){ var f=Object.assign({},S.filters); f[key]=e.target.value; setState({filters:f}); }});
+    s.appendChild(h('option', {value:''}, ph));
+    opts.forEach(function(o) {
+      var at = {value:o};
+      if (S.filters[key] === o) at.selected = true;
+      s.appendChild(h('option', at, o));
+    });
     return s;
-  };
-  const els=[
-    h('div',{class:'search-wrap'},h('span',{class:'search-ico'},'🔍'),h('input',{class:'search-inp',type:'text',placeholder:'Search by style, colour, type…',value:S.search,onInput:e=>set({search:e.target.value})})),
-    mkFlt('All Leathers','leather',LEATHER_OPTIONS),
-    mkFlt('All Types','type',TYPE_OPTIONS),
-    mkFlt('All','sex',SEX_OPTIONS),
-    mkFlt('All Colours','colour',COLOUR_OPTIONS),
+  }
+
+  var els = [
+    h('div', {'class':'search-wrap'},
+      h('span', {'class':'search-ico'}, '🔍'),
+      h('input', {'class':'search-inp', type:'text', placeholder:'Search by style, colour, type…', value:S.search,
+        oninput:function(e){ setState({search:e.target.value}); }})
+    ),
+    mkFlt('All Leathers', 'leather', LEATHER_OPTIONS),
+    mkFlt('All Types',    'type',    TYPE_OPTIONS),
+    mkFlt('All',          'sex',     SEX_OPTIONS),
+    mkFlt('All Colours',  'colour',  COLOUR_OPTIONS)
   ];
-  if(canEdit()) els.push(h('button',{class:'btn-add',onClick:()=>set({modal:'add',form:{styleNo:'',leather:'',dimensions:'',type:'',sex:'',colour:''},pendingImages:[]})},'+ Add Style'));
-  return h('div',{class:'toolbar'},...els);
+
+  if (canEdit()) {
+    els.push(h('button', {'class':'btn-add', onclick:function(){
+      setState({ modal:'add', form:{styleNo:'',leather:'',dimensions:'',type:'',sex:'',colour:''}, pendingImages:[] });
+    }}, '+ Add Style'));
+  }
+
+  return h('div', {'class':'toolbar'}, els);
 }
 
-// ---- GRID ----
-function renderGrid(){
-  const filtered=getFiltered();
-  const total=Object.keys(S.products).length;
-  const wrap=h('div',{class:'grid-wrap'});
-  if(total===0){
-    wrap.appendChild(h('div',{class:'empty'},h('div',{class:'empty-ico'},'👜'),h('h3',{},'The Vault is Empty'),h('p',{},canEdit()?'Add your first product style to get started.':'No products have been added yet.')));
-    return wrap;
-  }
-  if(filtered.length===0){
-    wrap.appendChild(h('div',{class:'empty'},h('div',{class:'empty-ico'},'🔍'),h('h3',{},'No Results Found'),h('p',{},'Try adjusting your search or filters.')));
-    return wrap;
-  }
-  wrap.appendChild(h('div',{class:'stats'},h('b',{},String(filtered.length)),' of ',String(total),' style'+(total!==1?'s':'')));
-  const grid=h('div',{class:'grid'});
-  filtered.forEach(p=>{
-    const imgWrap=h('div',{class:'card-img'});
-    if(p.images&&p.images.length>0){
-      imgWrap.appendChild(h('img',{src:p.images[0],alt:p.styleNo}));
-      if(p.images.length>1) imgWrap.appendChild(h('div',{class:'img-count'},p.images.length+' photos'));
-    } else {
-      imgWrap.appendChild(h('div',{class:'no-img'},h('div',{},'📷'),h('span',{style:{fontSize:'11px',letterSpacing:'1px'}},'No Image')));
-    }
-    const tags=h('div',{class:'tags'});
-    if(p.type) tags.appendChild(h('span',{class:'tag g'},p.type));
-    if(p.sex) tags.appendChild(h('span',{class:'tag'},p.sex));
-    if(p.leather) tags.appendChild(h('span',{class:'tag'},p.leather));
-    if(p.colour) tags.appendChild(h('span',{class:'tag'},p.colour));
-    grid.appendChild(h('div',{class:'card',onClick:()=>set({modal:'detail',selected:p})},
-      imgWrap,
-      h('div',{class:'card-body'},h('div',{class:'style-no'},'#'+p.styleNo),tags,p.dimensions?h('div',{class:'card-meta'},p.dimensions):null)
+// ── Grid ──
+function renderGrid() {
+  var filtered = getFiltered();
+  var total    = Object.keys(S.products).length;
+  var wrap     = h('div', {'class':'grid-wrap'});
+
+  if (total === 0) {
+    wrap.appendChild(h('div', {'class':'empty'},
+      h('div', {'class':'empty-ico'}, '👜'),
+      h('h3', null, 'The Vault is Empty'),
+      h('p',  null, canEdit() ? 'Add your first product style to get started.' : 'No products have been added yet.')
     ));
+    return wrap;
+  }
+
+  if (filtered.length === 0) {
+    wrap.appendChild(h('div', {'class':'empty'},
+      h('div', {'class':'empty-ico'}, '🔍'),
+      h('h3', null, 'No Results Found'),
+      h('p',  null, 'Try adjusting your search or filters.')
+    ));
+    return wrap;
+  }
+
+  wrap.appendChild(h('div', {'class':'stats'}, h('b', null, String(filtered.length)), ' of ', String(total), ' style' + (total !== 1 ? 's' : '')));
+
+  var grid = h('div', {'class':'grid'});
+  filtered.forEach(function(p) {
+    var iw = h('div', {'class':'card-img'});
+    if (p.images && p.images.length > 0) {
+      iw.appendChild(h('img', {src:p.images[0], alt:p.styleNo}));
+      if (p.images.length > 1) iw.appendChild(h('div', {'class':'img-count'}, p.images.length + ' photos'));
+    } else {
+      iw.appendChild(h('div', {'class':'no-img'}, h('div', null, '📷'), h('span', {style:{fontSize:'11px'}}, 'No Image')));
+    }
+
+    var tags = h('div', {'class':'tags'});
+    if (p.type)    tags.appendChild(h('span', {'class':'tag g'}, p.type));
+    if (p.sex)     tags.appendChild(h('span', {'class':'tag'},   p.sex));
+    if (p.leather) tags.appendChild(h('span', {'class':'tag'},   p.leather));
+    if (p.colour)  tags.appendChild(h('span', {'class':'tag'},   p.colour));
+
+    var card = h('div', {'class':'card', onclick:function(){ setState({modal:'detail', selected:p}); }},
+      iw,
+      h('div', {'class':'card-body'},
+        h('div', {'class':'style-no'}, '#' + p.styleNo),
+        tags,
+        p.dimensions ? h('div', {'class':'card-meta'}, p.dimensions) : null
+      )
+    );
+    grid.appendChild(card);
   });
+
   wrap.appendChild(grid);
   return wrap;
 }
 
-// ---- ADMIN PANEL ----
-function renderAdmin(){
-  const users=getUsers();
-  const activity=getActivity();
-  const products=getProducts();
-  const wrap=h('div',{class:'admin-wrap'});
+// ── Image section (used in add / edit modals) ──
+function renderImgSection(existing, allowDel, styleKey) {
+  var frag = document.createDocumentFragment();
 
-  // Stats
-  const statsSection=h('div',{class:'admin-section'});
-  statsSection.appendChild(h('div',{class:'admin-section-hdr'},h('div',{},h('div',{class:'admin-section-title'},'Overview'),h('div',{class:'admin-section-sub'},'Database summary'))));
-  const sc=h('div',{class:'stat-cards'});
-  const totalStyles=Object.keys(products).length;
-  const totalImgs=Object.values(products).reduce((a,p)=>a+(p.images?.length||0),0);
-  const totalUsers=Object.keys(users).length;
-  [[totalStyles,'Styles'],[totalImgs,'Images'],[totalUsers,'Users']].forEach(([n,l])=>{
-    sc.appendChild(h('div',{class:'stat-card'},h('div',{class:'stat-num'},String(n)),h('div',{class:'stat-lbl'},l)));
-  });
-  statsSection.appendChild(sc);
-  wrap.appendChild(statsSection);
-
-  // User management
-  const userSection=h('div',{class:'admin-section'});
-  userSection.appendChild(h('div',{class:'admin-section-hdr'},
-    h('div',{},h('div',{class:'admin-section-title'},'User Access'),h('div',{class:'admin-section-sub'},'Manage roles for everyone who has signed in'))
-  ));
-  const table=h('table',{class:'user-table'});
-  table.appendChild(h('thead',{},h('tr',{},
-    h('th',{},'Name'),h('th',{},'Email'),h('th',{},'Role'),h('th',{},'Last Seen')
-  )));
-  const tbody=h('tbody',{});
-  Object.values(users).forEach(u=>{
-    const roleSel=h('select',{class:'role-sel',onChange:e=>updateUserRole(u.id,e.target.value)});
-    ROLES.forEach(r=>{ const op=h('option',{value:r},r.charAt(0).toUpperCase()+r.slice(1)); if(r===u.role) op.selected=true; roleSel.appendChild(op); });
-    // Disable changing own role
-    if(u.id===S.vaultUser.id) roleSel.disabled=true;
-    const lastSeen=u.lastSeen?new Date(u.lastSeen).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}):'—';
-    tbody.appendChild(h('tr',{},
-      h('td',{},u.id===S.vaultUser.id?h('b',{},u.name+' (you)'):u.name),
-      h('td',{style:{color:'var(--muted)'}},u.email),
-      h('td',{},roleSel),
-      h('td',{style:{color:'var(--muted)',fontSize:'11px'}},lastSeen)
-    ));
-  });
-  table.appendChild(tbody);
-  userSection.appendChild(table);
-  wrap.appendChild(userSection);
-
-  // Role legend
-  const legendSection=h('div',{class:'admin-section'});
-  legendSection.appendChild(h('div',{class:'admin-section-hdr'},h('div',{},h('div',{class:'admin-section-title'},'Role Permissions'))));
-  const legendBody=h('div',{style:{padding:'16px 22px'}});
-  [
-    ['admin','Full access — can view, add, edit, delete products and manage all users'],
-    ['editor','Can view, add, and edit products. Cannot delete or manage users'],
-    ['viewer','Read-only — can browse and search products but cannot make changes'],
-  ].forEach(([role,desc])=>{
-    legendBody.appendChild(h('div',{style:{display:'flex',alignItems:'center',gap:'12px',padding:'10px 0',borderBottom:'1px solid var(--border)'}},
-      rolePill(role),
-      h('span',{style:{fontSize:'12px',color:'var(--muted)',letterSpacing:'1px'}},desc)
-    ));
-  });
-  legendSection.appendChild(legendBody);
-  wrap.appendChild(legendSection);
-
-  // Activity log
-  const actSection=h('div',{class:'admin-section'});
-  actSection.appendChild(h('div',{class:'admin-section-hdr'},h('div',{},h('div',{class:'admin-section-title'},'Activity Log'),h('div',{class:'admin-section-sub'},'Last 50 actions'))));
-  const icons={'add':'➕','edit':'✏️','del':'🗑️','img-add':'📸','img-del':'🖼️','login':'🔑','logout':'🚪','role':'👤'};
-  if(activity.length===0){
-    actSection.appendChild(h('div',{style:{padding:'24px',textAlign:'center',color:'var(--muted)',fontSize:'12px'}},'No activity yet'));
-  } else {
-    activity.slice(0,50).forEach(a=>{
-      const t=new Date(a.time).toLocaleString('en-GB',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'});
-      actSection.appendChild(h('div',{class:'activity-row'},
-        h('span',{class:'act-ico'},icons[a.type]||'•'),
-        h('div',{class:'act-text'},h('b',{},a.user),' — ',a.detail),
-        h('span',{class:'act-time'},t)
-      ));
-    });
-  }
-  wrap.appendChild(actSection);
-  return wrap;
-}
-
-// ---- IMAGE SECTION ----
-function renderImgSection(existing,allowDel,styleKey){
-  const frag=document.createDocumentFragment();
-  if(existing&&existing.length>0){
-    frag.appendChild(h('div',{class:'sec-title'},'Current Images'));
-    const g=h('div',{class:'img-gallery'});
-    existing.forEach((img,i)=>{
-      const th=h('div',{class:'thumb'},h('img',{src:img,alt:''}));
-      if(allowDel&&canEdit()){ const d=h('button',{class:'thumb-del',onClick:e=>{e.stopPropagation();deleteImage(styleKey,i);}},'×'); th.appendChild(d); }
+  if (existing && existing.length > 0) {
+    frag.appendChild(h('div', {'class':'sec-title'}, 'Current Images'));
+    var g = h('div', {'class':'img-gallery'});
+    existing.forEach(function(img, i) {
+      var th = h('div', {'class':'thumb'}, h('img', {src:img, alt:''}));
+      if (allowDel && canEdit()) {
+        (function(idx) {
+          var del = h('button', {'class':'thumb-del', onclick:function(e){ e.stopPropagation(); deleteImage(styleKey, idx); }}, '×');
+          th.appendChild(del);
+        })(i);
+      }
       g.appendChild(th);
     });
     frag.appendChild(g);
   }
-  if(S.pendingImages.length>0){
-    frag.appendChild(h('div',{class:'sec-title'},'Pending Upload'));
-    const g=h('div',{class:'img-gallery'});
-    S.pendingImages.forEach((p,i)=>{
-      const th=h('div',{class:'thumb'},h('img',{src:p.dataUrl,alt:''}));
-      const d=h('button',{class:'thumb-del',onClick:()=>{ const n=[...S.pendingImages]; n.splice(i,1); set({pendingImages:n}); }},'×');
-      th.appendChild(d); g.appendChild(th);
+
+  if (S.pendingImages.length > 0) {
+    frag.appendChild(h('div', {'class':'sec-title'}, 'Pending Upload'));
+    var pg = h('div', {'class':'img-gallery'});
+    S.pendingImages.forEach(function(p, i) {
+      var th = h('div', {'class':'thumb'}, h('img', {src:p.dataUrl, alt:''}));
+      (function(idx) {
+        var del = h('button', {'class':'thumb-del', onclick:function(){ var n=S.pendingImages.slice(); n.splice(idx,1); setState({pendingImages:n}); }}, '×');
+        th.appendChild(del);
+      })(i);
+      pg.appendChild(th);
     });
-    frag.appendChild(g);
+    frag.appendChild(pg);
   }
-  frag.appendChild(h('div',{class:'sec-title'},'Add Images'));
-  const dz=h('div',{class:'drop-zone'},'📸 Drop images here or ',h('strong',{},'click to browse'));
-  dz.addEventListener('click',()=>{ const fi=document.createElement('input'); fi.type='file'; fi.multiple=true; fi.accept='image/*'; fi.onchange=e=>handleFilesPending(Array.from(e.target.files)); fi.click(); });
-  dz.addEventListener('dragover',e=>{ e.preventDefault(); dz.classList.add('drag'); });
-  dz.addEventListener('dragleave',()=>dz.classList.remove('drag'));
-  dz.addEventListener('drop',e=>{ e.preventDefault(); dz.classList.remove('drag'); handleFilesPending(Array.from(e.dataTransfer.files).filter(f=>f.type.startsWith('image/'))); });
-  frag.appendChild(dz);
+
+  frag.appendChild(h('div', {'class':'sec-title'}, 'Add Images'));
+  frag.appendChild(makeDZ('Drop images here or click to browse', handleFilesPending));
   return frag;
 }
 
-// ---- ADD MODAL ----
-function renderAddModal(){
-  const upd=(k,v)=>set({form:{...S.form,[k]:v}});
-  const overlay=h('div',{class:'overlay'},
-    h('div',{class:'modal'},
-      h('div',{class:'modal-hdr'},
-        h('div',{},h('div',{class:'eyebrow'},'New Entry'),h('div',{class:'big-title'},'Add Style')),
-        h('button',{class:'btn-x',onClick:()=>set({modal:null})},'×')
+// ── Add modal ──
+function renderAddModal() {
+  var f = S.form;
+  function upd(k, v) { var nf=Object.assign({},S.form); nf[k]=v; setState({form:nf}); }
+
+  var body = h('div', {'class':'modal-body'},
+    fld('Style Number *', h('input', {'class':'inp', type:'text', placeholder:'e.g. HB-2024-001', value:f.styleNo,
+      oninput:function(e){ upd('styleNo',e.target.value); }})),
+    h('div', {'class':'form-row'},
+      fld('Leather', mkSelect(LEATHER_OPTIONS, f.leather, function(e){ upd('leather',e.target.value); }, 'Select leather')),
+      fld('Colour',  mkSelect(COLOUR_OPTIONS,  f.colour,  function(e){ upd('colour', e.target.value); }, 'Select colour'))
+    ),
+    h('div', {'class':'form-row'},
+      fld('Style / Type', mkSelect(TYPE_OPTIONS, f.type, function(e){ upd('type',e.target.value); }, 'Select type')),
+      fld('Sex',          mkSelect(SEX_OPTIONS,  f.sex,  function(e){ upd('sex', e.target.value); }, 'Select'))
+    ),
+    fld('Dimensions', h('input', {'class':'inp', type:'text', placeholder:'e.g. 30cm × 20cm × 10cm', value:f.dimensions,
+      oninput:function(e){ upd('dimensions',e.target.value); }})),
+    renderImgSection([], false, null)
+  );
+
+  var overlay = h('div', {'class':'overlay'},
+    h('div', {'class':'modal'},
+      h('div', {'class':'modal-hdr'},
+        h('div', null, h('div', {'class':'eyebrow'}, 'New Entry'), h('div', {'class':'big-title'}, 'Add Style')),
+        h('button', {'class':'btn-x', onclick:function(){ setState({modal:null}); }}, '×')
       ),
-      h('div',{class:'modal-body'},
-        fld('Style Number *',h('input',{class:'inp',type:'text',placeholder:'e.g. HB-2024-001',value:S.form.styleNo,onInput:e=>upd('styleNo',e.target.value)})),
-        h('div',{class:'form-row'},fld('Leather',sel(LEATHER_OPTIONS,S.form.leather,e=>upd('leather',e.target.value),'Select leather')),fld('Colour',sel(COLOUR_OPTIONS,S.form.colour,e=>upd('colour',e.target.value),'Select colour'))),
-        h('div',{class:'form-row'},fld('Style / Type',sel(TYPE_OPTIONS,S.form.type,e=>upd('type',e.target.value),'Select type')),fld('Sex',sel(SEX_OPTIONS,S.form.sex,e=>upd('sex',e.target.value),'Select'))),
-        fld('Dimensions',h('input',{class:'inp',type:'text',placeholder:'e.g. 30cm × 20cm × 10cm',value:S.form.dimensions,onInput:e=>upd('dimensions',e.target.value)})),
-        renderImgSection([],false,null)
-      ),
-      h('div',{class:'modal-ftr'},
-        h('button',{class:'btn-sec',onClick:()=>set({modal:null})},'Cancel'),
-        h('button',{class:'btn-primary',onClick:saveProduct,disabled:S.saving},S.saving?[h('span',{class:'spin'}),'Saving…']:'Save Style')
+      body,
+      h('div', {'class':'modal-ftr'},
+        h('button', {'class':'btn-sec', onclick:function(){ setState({modal:null}); }}, 'Cancel'),
+        h('button', {'class':'btn-primary', onclick:saveProduct, disabled:S.saving||undefined},
+          S.saving ? [h('span',{'class':'spin'}), 'Saving…'] : 'Save Style'
+        )
       )
     )
   );
-  overlay.addEventListener('click',e=>{ if(e.target===overlay) set({modal:null}); });
+  overlay.addEventListener('click', function(e){ if(e.target===overlay) setState({modal:null}); });
   return overlay;
 }
 
-// ---- DETAIL MODAL ----
-function renderDetailModal(){
-  const p=S.selected;
-  const body=h('div',{class:'modal-body'});
-  if(p.images&&p.images.length>0){
-    body.appendChild(h('div',{class:'sec-title'},'Images'));
-    const dg=h('div',{class:'detail-grid'});
-    p.images.forEach(img=>{ const d=h('div',{class:'detail-img'},h('img',{src:img,alt:''})); d.addEventListener('click',()=>set({lightbox:img})); dg.appendChild(d); });
+// ── Detail modal ──
+function renderDetailModal() {
+  var p    = S.selected;
+  var body = h('div', {'class':'modal-body'});
+
+  if (p.images && p.images.length > 0) {
+    body.appendChild(h('div', {'class':'sec-title'}, 'Images'));
+    var dg = h('div', {'class':'detail-grid'});
+    p.images.forEach(function(img) {
+      var d = h('div', {'class':'detail-img'}, h('img', {src:img, alt:''}));
+      d.addEventListener('click', function(){ setState({lightbox:img}); });
+      dg.appendChild(d);
+    });
     body.appendChild(dg);
   }
-  if(canEdit()){
-    const dz=h('div',{class:'drop-zone'},'📁 Drop images here or click to upload');
-    dz.addEventListener('click',()=>{ const fi=document.createElement('input'); fi.type='file'; fi.multiple=true; fi.accept='image/*'; fi.onchange=e=>addImagesToExisting(p.styleNo,Array.from(e.target.files)); fi.click(); });
-    dz.addEventListener('dragover',e=>{ e.preventDefault(); dz.classList.add('drag'); });
-    dz.addEventListener('dragleave',()=>dz.classList.remove('drag'));
-    dz.addEventListener('drop',e=>{ e.preventDefault(); dz.classList.remove('drag'); addImagesToExisting(p.styleNo,Array.from(e.dataTransfer.files).filter(f=>f.type.startsWith('image/'))); });
-    body.appendChild(dz);
-    if(S.saving) body.appendChild(h('div',{style:{textAlign:'center',marginTop:'10px',fontSize:'12px',color:'var(--muted)'}},h('span',{class:'spin'}),'Uploading…'));
+
+  if (canEdit()) {
+    body.appendChild(makeDZ('Drop images here or click to upload', function(files){ addImagesToExisting(p.styleNo, files); }));
+    if (S.saving) body.appendChild(h('div', {style:{textAlign:'center',marginTop:'10px',fontSize:'12px',color:'var(--muted)'}}, h('span',{'class':'spin'}), 'Uploading…'));
   }
-  body.appendChild(h('div',{class:'sec-title'},'Attributes'));
-  const attrs=h('div',{class:'attrs'});
-  [['Leather',p.leather],['Colour',p.colour],['Style / Type',p.type],['Sex',p.sex],['Dimensions',p.dimensions]].forEach(([l,v])=>{
-    if(v) attrs.appendChild(h('div',{class:'attr'},h('div',{class:'attr-lbl'},l),h('div',{class:'attr-val'},v)));
+
+  body.appendChild(h('div', {'class':'sec-title'}, 'Attributes'));
+  var attrs = h('div', {'class':'attrs'});
+  [['Leather',p.leather],['Colour',p.colour],['Style / Type',p.type],['Sex',p.sex],['Dimensions',p.dimensions]].forEach(function(pair) {
+    if (pair[1]) attrs.appendChild(h('div', {'class':'attr'}, h('div',{'class':'attr-lbl'},pair[0]), h('div',{'class':'attr-val'},pair[1])));
   });
   body.appendChild(attrs);
-  body.appendChild(h('div',{class:'meta-info'},'Created by ',p.createdBy,' · ',new Date(p.createdAt).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}),h('br',{}),'Last updated by ',p.updatedBy||p.createdBy));
-  const ftrBtns=[h('button',{class:'btn-sec',onClick:()=>set({modal:null})},'Close')];
-  if(canEdit()) ftrBtns.unshift(h('button',{class:'btn-primary',onClick:()=>set({modal:'edit',form:{styleNo:p.styleNo,leather:p.leather||'',dimensions:p.dimensions||'',type:p.type||'',sex:p.sex||'',colour:p.colour||''},pendingImages:[]})},'Edit'));
-  if(isAdmin()) ftrBtns.unshift(h('button',{class:'btn-del',onClick:()=>deleteProduct(p.styleNo)},'Delete Style'));
-  const overlay=h('div',{class:'overlay'},h('div',{class:'modal'},h('div',{class:'modal-hdr'},h('div',{},h('div',{class:'eyebrow'},'Style Detail'),h('div',{class:'big-title'},'#'+p.styleNo)),h('button',{class:'btn-x',onClick:()=>set({modal:null})},'×')),body,h('div',{class:'modal-ftr'},...ftrBtns)));
-  overlay.addEventListener('click',e=>{ if(e.target===overlay) set({modal:null}); });
-  return overlay;
-}
 
-// ---- EDIT MODAL ----
-function renderEditModal(){
-  const p=S.selected;
-  const upd=(k,v)=>set({form:{...S.form,[k]:v}});
-  const overlay=h('div',{class:'overlay'},
-    h('div',{class:'modal'},
-      h('div',{class:'modal-hdr'},h('div',{},h('div',{class:'eyebrow'},'Editing'),h('div',{class:'big-title'},'#'+p.styleNo)),h('button',{class:'btn-x',onClick:()=>set({modal:'detail'})},'×')),
-      h('div',{class:'modal-body'},
-        h('div',{class:'form-row'},fld('Leather',sel(LEATHER_OPTIONS,S.form.leather,e=>upd('leather',e.target.value),'Select leather')),fld('Colour',sel(COLOUR_OPTIONS,S.form.colour,e=>upd('colour',e.target.value),'Select colour'))),
-        h('div',{class:'form-row'},fld('Style / Type',sel(TYPE_OPTIONS,S.form.type,e=>upd('type',e.target.value),'Select type')),fld('Sex',sel(SEX_OPTIONS,S.form.sex,e=>upd('sex',e.target.value),'Select'))),
-        fld('Dimensions',h('input',{class:'inp',type:'text',placeholder:'e.g. 30cm × 20cm × 10cm',value:S.form.dimensions,onInput:e=>upd('dimensions',e.target.value)})),
-        renderImgSection(p.images||[],true,p.styleNo)
+  body.appendChild(h('div', {'class':'meta-info'},
+    'Created by ', p.createdBy, ' · ', new Date(p.createdAt).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}),
+    h('br', null),
+    'Last updated by ', (p.updatedBy || p.createdBy)
+  ));
+
+  var ftrBtns = [h('button', {'class':'btn-sec', onclick:function(){ setState({modal:null}); }}, 'Close')];
+  if (canEdit()) ftrBtns.unshift(h('button', {'class':'btn-primary', onclick:function(){
+    setState({ modal:'edit', form:{styleNo:p.styleNo,leather:p.leather||'',dimensions:p.dimensions||'',type:p.type||'',sex:p.sex||'',colour:p.colour||''}, pendingImages:[] });
+  }}, 'Edit'));
+  if (isAdmin()) ftrBtns.unshift(h('button', {'class':'btn-del', onclick:function(){ deleteProduct(p.styleNo); }}, 'Delete'));
+
+  var overlay = h('div', {'class':'overlay'},
+    h('div', {'class':'modal'},
+      h('div', {'class':'modal-hdr'},
+        h('div', null, h('div',{'class':'eyebrow'},'Style Detail'), h('div',{'class':'big-title'},'#'+p.styleNo)),
+        h('button', {'class':'btn-x', onclick:function(){ setState({modal:null}); }}, '×')
       ),
-      h('div',{class:'modal-ftr'},h('button',{class:'btn-sec',onClick:()=>set({modal:'detail'})},'Cancel'),h('button',{class:'btn-primary',onClick:saveEdit,disabled:S.saving},S.saving?[h('span',{class:'spin'}),'Saving…']:'Save Changes'))
+      body,
+      h('div', {'class':'modal-ftr'}, ftrBtns)
     )
   );
-  overlay.addEventListener('click',e=>{ if(e.target===overlay) set({modal:'detail'}); });
+  overlay.addEventListener('click', function(e){ if(e.target===overlay) setState({modal:null}); });
   return overlay;
 }
 
-// ---- LIGHTBOX ----
-function renderLightbox(){
-  const lb=h('div',{class:'lightbox',onClick:()=>set({lightbox:null})},h('button',{class:'lb-close',onClick:()=>set({lightbox:null})},'×'),h('img',{src:S.lightbox,alt:'',onClick:e=>e.stopPropagation()}));
-  return lb;
+// ── Edit modal ──
+function renderEditModal() {
+  var p = S.selected;
+  var f = S.form;
+  function upd(k, v) { var nf=Object.assign({},S.form); nf[k]=v; setState({form:nf}); }
+
+  var body = h('div', {'class':'modal-body'},
+    h('div', {'class':'form-row'},
+      fld('Leather', mkSelect(LEATHER_OPTIONS, f.leather, function(e){ upd('leather',e.target.value); }, 'Select leather')),
+      fld('Colour',  mkSelect(COLOUR_OPTIONS,  f.colour,  function(e){ upd('colour', e.target.value); }, 'Select colour'))
+    ),
+    h('div', {'class':'form-row'},
+      fld('Style / Type', mkSelect(TYPE_OPTIONS, f.type, function(e){ upd('type',e.target.value); }, 'Select type')),
+      fld('Sex',          mkSelect(SEX_OPTIONS,  f.sex,  function(e){ upd('sex', e.target.value); }, 'Select'))
+    ),
+    fld('Dimensions', h('input', {'class':'inp', type:'text', placeholder:'e.g. 30cm × 20cm × 10cm', value:f.dimensions,
+      oninput:function(e){ upd('dimensions',e.target.value); }})),
+    renderImgSection(p.images || [], true, p.styleNo)
+  );
+
+  var overlay = h('div', {'class':'overlay'},
+    h('div', {'class':'modal'},
+      h('div', {'class':'modal-hdr'},
+        h('div', null, h('div',{'class':'eyebrow'},'Editing'), h('div',{'class':'big-title'},'#'+p.styleNo)),
+        h('button', {'class':'btn-x', onclick:function(){ setState({modal:'detail'}); }}, '×')
+      ),
+      body,
+      h('div', {'class':'modal-ftr'},
+        h('button', {'class':'btn-sec', onclick:function(){ setState({modal:'detail'}); }}, 'Cancel'),
+        h('button', {'class':'btn-primary', onclick:saveEdit, disabled:S.saving||undefined},
+          S.saving ? [h('span',{'class':'spin'}), 'Saving…'] : 'Save Changes'
+        )
+      )
+    )
+  );
+  overlay.addEventListener('click', function(e){ if(e.target===overlay) setState({modal:'detail'}); });
+  return overlay;
 }
 
-// =====================================================
+// ── Lightbox ──
+function renderLightbox() {
+  return h('div', {'class':'lightbox', onclick:function(){ setState({lightbox:null}); }},
+    h('button', {'class':'lb-close', onclick:function(){ setState({lightbox:null}); }}, '×'),
+    h('img', {src:S.lightbox, alt:'', onclick:function(e){ e.stopPropagation(); }})
+  );
+}
+
+// ── Admin panel ──
+function renderAdmin() {
+  var users    = getUsers();
+  var activity = getActivity();
+  var products = getProducts();
+  var wrap     = h('div', {'class':'admin-wrap'});
+
+  // Stats
+  var ss = h('div', {'class':'admin-section'});
+  ss.appendChild(h('div', {'class':'admin-section-hdr'}, h('div', {'class':'admin-section-title'}, 'Overview')));
+  var sc = h('div', {'class':'stat-cards'});
+  var totalStyles = Object.keys(products).length;
+  var totalImgs   = Object.values(products).reduce(function(a,p){ return a + (p.images ? p.images.length : 0); }, 0);
+  var totalUsers  = Object.keys(users).length;
+  [[totalStyles,'Styles'],[totalImgs,'Images'],[totalUsers,'Users']].forEach(function(pair) {
+    sc.appendChild(h('div', {'class':'stat-card'}, h('div',{'class':'stat-num'},String(pair[0])), h('div',{'class':'stat-lbl'},pair[1])));
+  });
+  ss.appendChild(sc);
+  wrap.appendChild(ss);
+
+  // Users table
+  var us = h('div', {'class':'admin-section'});
+  us.appendChild(h('div', {'class':'admin-section-hdr'},
+    h('div', {'class':'admin-section-title'}, 'User Access'),
+    h('div', {'class':'admin-section-sub'}, 'Manage roles for everyone who has signed in')
+  ));
+  var table = h('table', {'class':'user-table'});
+  table.appendChild(h('thead', null, h('tr', null,
+    h('th',null,'Name'), h('th',null,'Email'), h('th',null,'Role'), h('th',null,'Last Seen')
+  )));
+  var tbody = h('tbody', null);
+  Object.values(users).forEach(function(u) {
+    var rs = h('select', {'class':'role-sel', onchange:function(e){ updateUserRole(u.id, e.target.value); }});
+    ROLES.forEach(function(r) {
+      var at = {value:r};
+      if (r === u.role) at.selected = true;
+      rs.appendChild(h('option', at, r.charAt(0).toUpperCase() + r.slice(1)));
+    });
+    if (u.id === S.vaultUser.id) rs.disabled = true;
+    var lastSeen = u.lastSeen ? new Date(u.lastSeen).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}) : '—';
+    var nameCell = u.id === S.vaultUser.id ? h('b', null, u.name + ' (you)') : document.createTextNode(u.name);
+    tbody.appendChild(h('tr', null,
+      h('td', null, nameCell),
+      h('td', {style:{color:'var(--muted)'}}, u.email),
+      h('td', null, rs),
+      h('td', {style:{color:'var(--muted)',fontSize:'11px'}}, lastSeen)
+    ));
+  });
+  table.appendChild(tbody);
+  us.appendChild(table);
+  wrap.appendChild(us);
+
+  // Role legend
+  var ls = h('div', {'class':'admin-section'});
+  ls.appendChild(h('div', {'class':'admin-section-hdr'}, h('div',{'class':'admin-section-title'},'Role Permissions')));
+  var lb = h('div', {style:{padding:'14px 22px'}});
+  [
+    ['admin',  'Full access — view, add, edit, delete products and manage all users'],
+    ['editor', 'Can view, add and edit products. Cannot delete or manage users'],
+    ['viewer', 'Read-only — can browse and search but cannot make any changes']
+  ].forEach(function(pair) {
+    lb.appendChild(h('div', {style:{display:'flex',alignItems:'center',gap:'12px',padding:'10px 0',borderBottom:'1px solid var(--border)'}},
+      rolePill(pair[0]),
+      h('span', {style:{fontSize:'12px',color:'var(--muted)',letterSpacing:'1px'}}, pair[1])
+    ));
+  });
+  ls.appendChild(lb);
+  wrap.appendChild(ls);
+
+  // Activity log
+  var as = h('div', {'class':'admin-section'});
+  as.appendChild(h('div', {'class':'admin-section-hdr'},
+    h('div', {'class':'admin-section-title'}, 'Activity Log'),
+    h('div', {'class':'admin-section-sub'}, 'Last 50 actions')
+  ));
+  var icons = {add:'➕',edit:'✏️',del:'🗑️','img-add':'📸','img-del':'🖼️',login:'🔑',logout:'🚪',role:'👤'};
+  if (!activity.length) {
+    as.appendChild(h('div', {style:{padding:'24px',textAlign:'center',color:'var(--muted)',fontSize:'12px'}}, 'No activity yet'));
+  } else {
+    activity.slice(0, 50).forEach(function(a) {
+      var t = new Date(a.time).toLocaleString('en-GB',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'});
+      as.appendChild(h('div', {'class':'activity-row'},
+        h('span', {'class':'act-ico'}, icons[a.type] || '•'),
+        h('div',  {'class':'act-text'}, h('b',null,a.user), ' — ', a.detail),
+        h('span', {'class':'act-time'}, t)
+      ));
+    });
+  }
+  wrap.appendChild(as);
+  return wrap;
+}
+
+// ─────────────────────────────────────────────
 // BOOT
-// =====================================================
-function showError(title, bodyHtml) {
-  document.getElementById('app').innerHTML = `
-    <header class="hdr"><div class="logo">The <em>Vault</em></div></header>
-    <div class="login-wrap">
-      <div class="login-box" style="text-align:left;max-width:520px">
-        <div class="eyebrow" style="color:var(--danger)">Error</div>
-        <div class="big-title" style="margin-bottom:20px">${title}</div>
-        <div style="font-size:12px;line-height:2;color:var(--muted);letter-spacing:1px">${bodyHtml}</div>
-        <button onclick="location.reload()" style="margin-top:24px;width:100%;background:var(--charcoal);color:var(--gold-light);border:none;padding:13px;font-family:'Montserrat',sans-serif;font-size:11px;letter-spacing:3px;text-transform:uppercase;cursor:pointer">↻ Refresh &amp; Try Again</button>
-      </div>
-    </div>`;
+// ─────────────────────────────────────────────
+function showFatalError(msg) {
+  document.getElementById('app').innerHTML =
+    '<header class="hdr"><div class="logo">The <em>Vault</em></div></header>' +
+    '<div class="login-wrap"><div class="login-box">' +
+    '<div class="eyebrow" style="color:var(--danger)">Error</div>' +
+    '<div class="big-title" style="margin-bottom:20px">Cannot Load</div>' +
+    '<div class="err-box">' + msg + '</div>' +
+    '<button onclick="location.reload()" style="margin-top:20px;width:100%;background:var(--charcoal);color:var(--gold-light);border:none;padding:13px;font-family:Montserrat,sans-serif;font-size:11px;letter-spacing:3px;text-transform:uppercase;cursor:pointer">&#8635; Refresh</button>' +
+    '</div></div>';
 }
 
-async function boot() {
-  // 1. Must be served over http/https
-  if (window.location.protocol === 'file:') {
-    showError('Hosted URL Required',
-      `<p>This app is open as a local file and cannot connect to Microsoft login.</p>
-       <p style="margin-top:12px">Please open it from:<br><b>https://jcinternationalltd.github.io/Vault/</b></p>`);
-    return;
-  }
-
-  // 2. MSAL must have loaded from CDN
+function boot() {
+  // Must have internet (MSAL loaded from CDN)
   if (typeof msal === 'undefined') {
-    showError('Library Failed to Load',
-      `<p>The Microsoft login library did not load. This is usually a network issue.</p>
-       <p style="margin-top:12px">Please check your internet connection and try refreshing.</p>`);
+    showFatalError('The Microsoft login library failed to load. Please check your internet connection and refresh the page.');
     return;
   }
 
-  // 3. Initialise MSAL properly — must call initialize() in MSAL v2.38+
+  // Create MSAL instance
   try {
-    await msalInstance.initialize();
+    msalApp = createMsalApp();
   } catch(e) {
-    showError('MSAL Init Failed', `<p>${e.message}</p>`);
+    showFatalError('Failed to create Microsoft login: ' + e.message);
     return;
   }
 
-  // 4. Handle redirect response (runs after Microsoft sends user back)
-  try {
-    const resp = await msalInstance.handleRedirectPromise();
-    if (resp && resp.account) {
-      msalInstance.setActiveAccount(resp.account);
-      const vu = ensureUser(resp.account);
-      logActivity('login', 'Signed in', vu.name);
-      set({ msAccount: resp.account, vaultUser: vu, products: getProducts() });
-      return;
-    }
-  } catch(e) {
-    // Redirect errors — usually means URI mismatch in Azure
-    showError('Sign-In Failed',
-      `<p style="margin-bottom:12px">Microsoft returned an error. The most likely cause is a <b>Redirect URI mismatch</b> in Azure Portal.</p>
-       <p style="margin-bottom:8px">Make sure this exact URL is added under <b>Authentication → Single-page application</b> in your Azure app registration:</p>
-       <div style="background:var(--cream);border:1px solid var(--border);padding:12px 16px;margin:12px 0;word-break:break-all">
-         <code style="font-size:11px;color:var(--charcoal)">https://jcinternationalltd.github.io/Vault/</code>
-       </div>
-       <p style="font-size:11px;margin-top:8px;color:var(--danger)">${e.message||''}</p>`);
-    return;
-  }
-
-  // 5. Check if already signed in from a previous session
-  try {
-    const accounts = msalInstance.getAllAccounts();
-    if (accounts.length > 0) {
-      msalInstance.setActiveAccount(accounts[0]);
-      const vu = ensureUser(accounts[0]);
-      set({ msAccount: accounts[0], vaultUser: vu, products: getProducts() });
-      return;
-    }
-  } catch(e) { /* ignore, fall through to login screen */ }
-
-  // 6. No session — show login screen
-  set({});
+  // Initialise, then check for existing session
+  msalApp.initialize()
+    .then(function() {
+      var accounts = msalApp.getAllAccounts();
+      if (accounts.length > 0) {
+        msalApp.setActiveAccount(accounts[0]);
+        var vu = ensureUser(accounts[0]);
+        setState({ msAccount:accounts[0], vaultUser:vu, products:getProducts() });
+      } else {
+        // No session — show login screen
+        setState({});
+      }
+    })
+    .catch(function(e) {
+      showFatalError('Microsoft login initialisation failed: ' + (e.message || 'Unknown error') + '<br><br>Please refresh the page and try again.');
+    });
 }
 
 boot();
