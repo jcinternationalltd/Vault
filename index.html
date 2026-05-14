@@ -834,22 +834,24 @@ function renderImgSection(existing, allowDel, styleKey) {
 
 // ── Add modal ──
 function renderAddModal() {
-  var f = S.form;
-  function upd(k, v) { var nf=Object.assign({},S.form); nf[k]=v; setState({form:nf}); }
+  // Inputs update S.form directly WITHOUT calling setState (no re-render on keystroke)
+  function bindInput(key) {
+    return function(e) { S.form[key] = e.target.value; };
+  }
 
   var body = h('div', {'class':'modal-body'},
-    fld('Style Number *', h('input', {'class':'inp', type:'text', placeholder:'e.g. HB-2024-001', value:f.styleNo,
-      oninput:function(e){ upd('styleNo',e.target.value); }})),
+    fld('Style Number *', h('input', {'class':'inp', type:'text', placeholder:'e.g. HB-2024-001', value:S.form.styleNo,
+      oninput: bindInput('styleNo')})),
     h('div', {'class':'form-row'},
-      fld('Leather', mkSelect(LEATHER_OPTIONS, f.leather, function(e){ upd('leather',e.target.value); }, 'Select leather')),
-      fld('Colour',  mkSelect(COLOUR_OPTIONS,  f.colour,  function(e){ upd('colour', e.target.value); }, 'Select colour'))
+      fld('Leather', mkSelect(LEATHER_OPTIONS, S.form.leather, function(e){ S.form.leather = e.target.value; }, 'Select leather')),
+      fld('Colour',  mkSelect(COLOUR_OPTIONS,  S.form.colour,  function(e){ S.form.colour  = e.target.value; }, 'Select colour'))
     ),
     h('div', {'class':'form-row'},
-      fld('Style / Type', mkSelect(TYPE_OPTIONS, f.type, function(e){ upd('type',e.target.value); }, 'Select type')),
-      fld('Sex',          mkSelect(SEX_OPTIONS,  f.sex,  function(e){ upd('sex', e.target.value); }, 'Select'))
+      fld('Style / Type', mkSelect(TYPE_OPTIONS, S.form.type, function(e){ S.form.type = e.target.value; }, 'Select type')),
+      fld('Sex',          mkSelect(SEX_OPTIONS,  S.form.sex,  function(e){ S.form.sex  = e.target.value; }, 'Select'))
     ),
-    fld('Dimensions', h('input', {'class':'inp', type:'text', placeholder:'e.g. 30cm × 20cm × 10cm', value:f.dimensions,
-      oninput:function(e){ upd('dimensions',e.target.value); }})),
+    fld('Dimensions', h('input', {'class':'inp', type:'text', placeholder:'e.g. 30cm × 20cm × 10cm', value:S.form.dimensions,
+      oninput: bindInput('dimensions')})),
     renderImgSection([], false, null)
   );
 
@@ -929,20 +931,19 @@ function renderDetailModal() {
 // ── Edit modal ──
 function renderEditModal() {
   var p = S.selected;
-  var f = S.form;
-  function upd(k, v) { var nf=Object.assign({},S.form); nf[k]=v; setState({form:nf}); }
+  // Inputs update S.form directly WITHOUT calling setState (no re-render on keystroke)
 
   var body = h('div', {'class':'modal-body'},
     h('div', {'class':'form-row'},
-      fld('Leather', mkSelect(LEATHER_OPTIONS, f.leather, function(e){ upd('leather',e.target.value); }, 'Select leather')),
-      fld('Colour',  mkSelect(COLOUR_OPTIONS,  f.colour,  function(e){ upd('colour', e.target.value); }, 'Select colour'))
+      fld('Leather', mkSelect(LEATHER_OPTIONS, S.form.leather, function(e){ S.form.leather = e.target.value; }, 'Select leather')),
+      fld('Colour',  mkSelect(COLOUR_OPTIONS,  S.form.colour,  function(e){ S.form.colour  = e.target.value; }, 'Select colour'))
     ),
     h('div', {'class':'form-row'},
-      fld('Style / Type', mkSelect(TYPE_OPTIONS, f.type, function(e){ upd('type',e.target.value); }, 'Select type')),
-      fld('Sex',          mkSelect(SEX_OPTIONS,  f.sex,  function(e){ upd('sex', e.target.value); }, 'Select'))
+      fld('Style / Type', mkSelect(TYPE_OPTIONS, S.form.type, function(e){ S.form.type = e.target.value; }, 'Select type')),
+      fld('Sex',          mkSelect(SEX_OPTIONS,  S.form.sex,  function(e){ S.form.sex  = e.target.value; }, 'Select'))
     ),
-    fld('Dimensions', h('input', {'class':'inp', type:'text', placeholder:'e.g. 30cm × 20cm × 10cm', value:f.dimensions,
-      oninput:function(e){ upd('dimensions',e.target.value); }})),
+    fld('Dimensions', h('input', {'class':'inp', type:'text', placeholder:'e.g. 30cm × 20cm × 10cm', value:S.form.dimensions,
+      oninput:function(e){ S.form.dimensions = e.target.value; }})),
     renderImgSection(p.images || [], true, p.styleNo)
   );
 
