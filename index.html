@@ -308,7 +308,7 @@ function logActivity(type,detail,userName){
 /* ── State ── */
 var S={
   msAccount:null,vaultUser:null,products:{},
-  search:'',filters:{leather:'',type:'',sex:'',colour:'',category:''},
+  search:'',filters:{leather:'',type:'',sex:'',colour:'',category:'',brand:''},
   tab:'products',modal:null,selected:null,lightbox:null,
   toast:null,toastTimer:null,saving:false,
   loginLoading:false,loginError:'',
@@ -464,13 +464,14 @@ function refreshPendingGallery(){
 function getFiltered(){
   var q=S.search.toLowerCase();
   return Object.values(S.products).filter(function(p){
-    var ms=!q||p.styleNo.toLowerCase().indexOf(q)!==-1||(p.colour||'').toLowerCase().indexOf(q)!==-1||(p.type||'').toLowerCase().indexOf(q)!==-1||(p.leather||'').toLowerCase().indexOf(q)!==-1;
+    var ms=!q||p.styleNo.toLowerCase().indexOf(q)!==-1||(p.colour||'').toLowerCase().indexOf(q)!==-1||(p.type||'').toLowerCase().indexOf(q)!==-1||(p.leather||'').toLowerCase().indexOf(q)!==-1||(p.brand||'').toLowerCase().indexOf(q)!==-1;
     return ms
       &&(!S.filters.category||p.category===S.filters.category)
       &&(!S.filters.leather||p.leather===S.filters.leather)
       &&(!S.filters.type||p.type===S.filters.type)
       &&(!S.filters.sex||p.sex===S.filters.sex)
-      &&(!S.filters.colour||p.colour===S.filters.colour);
+      &&(!S.filters.colour||p.colour===S.filters.colour)
+      &&(!S.filters.brand||p.brand===S.filters.brand);
   });
 }
 
@@ -844,6 +845,7 @@ function renderToolbar(){
         oninput:function(e){setState({search:e.target.value});}})
     ),
     mkFlt('Bags & Wallets','category',['Bag','Wallet']),
+    mkFlt('All Brands','brand',getBrandOptions()),
     mkFlt('All Leathers','leather',getLeatherOptions()),
     mkFlt('All Types','type',getTypeOptions(S.filters.category||'').concat(S.filters.category?[]:WALLET_TYPES).filter(function(v,i,a){return a.indexOf(v)===i;}).sort()),
     mkFlt('All','sex',SEX_OPTIONS),
