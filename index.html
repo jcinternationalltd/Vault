@@ -475,16 +475,33 @@ function getFiltered(){
 }
 
 /* ── Product Actions ── */
+function readFormFromDOM(){
+  // Read values directly from DOM inputs to avoid S.form being stale after re-render
+  function val(sel){ var el=document.querySelector(sel); return el?el.value.trim():''; }
+  return {
+    styleNo:  val('#f-styleNo'),
+    category: S.form.category, // set by toggle button, stored in S.form
+    brand:    val('#f-brand'),
+    leather:  val('#f-leather'),
+    colour:   val('#f-colour'),
+    type:     val('#f-type'),
+    sex:      val('#f-sex'),
+    length:   val('#f-length'),
+    width:    val('#f-width'),
+    height:   val('#f-height'),
+  };
+}
+
 function saveProduct(){
-  if(!S.form.styleNo.trim()){showToast('Style number is required');return;}
-  setState({saving:true});
-  var key=S.form.styleNo.trim().toUpperCase();
+  var f=readFormFromDOM();
+  if(!f.styleNo){showToast('Style number is required');return;}
+  var key=f.styleNo.toUpperCase();
   var all=getProducts();
   var ex=all[key]||{};
-  var dims=[S.form.length,S.form.width,S.form.height].filter(Boolean).join(' x ');
+  var dims=[f.length,f.width,f.height].filter(Boolean).join(' x ');
   all[key]={
-    styleNo:key,category:S.form.category,brand:S.form.brand,leather:S.form.leather,colour:S.form.colour,
-    type:S.form.type,sex:S.form.sex,length:S.form.length,width:S.form.width,height:S.form.height,
+    styleNo:key,category:f.category,brand:f.brand,leather:f.leather,colour:f.colour,
+    type:f.type,sex:f.sex,length:f.length,width:f.width,height:f.height,
     dimensions:dims,images:(ex.images||[]).concat(S.pendingImages.map(function(p){return p.dataUrl;})),
     updatedBy:S.vaultUser.name,updatedAt:Date.now(),
     createdAt:ex.createdAt||Date.now(),createdBy:ex.createdBy||S.vaultUser.name
@@ -496,14 +513,14 @@ function saveProduct(){
 }
 
 function saveEdit(){
-  setState({saving:true});
+  var f=readFormFromDOM();
   var key=S.selected.styleNo;
   var all=getProducts();
   var ex=all[key]||S.selected;
-  var dims=[S.form.length,S.form.width,S.form.height].filter(Boolean).join(' x ');
+  var dims=[f.length,f.width,f.height].filter(Boolean).join(' x ');
   all[key]=Object.assign({},ex,{
-    category:S.form.category,brand:S.form.brand,leather:S.form.leather,colour:S.form.colour,
-    type:S.form.type,sex:S.form.sex,length:S.form.length,width:S.form.width,height:S.form.height,
+    category:f.category||S.form.category,brand:f.brand,leather:f.leather,colour:f.colour,
+    type:f.type,sex:f.sex,length:f.length,width:f.width,height:f.height,
     dimensions:dims,images:(ex.images||[]).concat(S.pendingImages.map(function(p){return p.dataUrl;})),
     updatedBy:S.vaultUser.name,updatedAt:Date.now()
   });
@@ -584,13 +601,14 @@ function h(tag,attrs){
 function fld(label,inp){ return h('div',{'class':'fld'},h('label',{'class':'lbl'},label),inp); }
 
 /* combobox: dropdown + free-text input combined */
-function mkCombo(options, value, onChangeFn, placeholder) {
+function mkCombo(options, value, onChangeFn, placeholder, inputId) {
   var wrap = document.createElement('div');
   wrap.style.cssText='position:relative;';
 
   var input = document.createElement('input');
   input.className='inp';
   input.type='text';
+  if(inputId) input.id=inputId;
   input.placeholder=placeholder||'Type or choose...';
   input.value=value||'';
   input.autocomplete='off';
@@ -629,8 +647,10 @@ function mkCombo(options, value, onChangeFn, placeholder) {
   return wrap;
 }
 
-function mkSelect(options,value,onChange,ph){
-  var s=h('select',{'class':'inp',onchange:onChange});
+function mkSelect(options,value,onChange,ph,selectId){
+  var attrs={'class':'inp',onchange:onChange};
+  if(selectId) attrs.id=selectId;
+  var s=h('select',attrs);
   if(ph) s.appendChild(h('option',{value:''},ph));
   options.forEach(function(o){
     var at={value:o};
@@ -879,11 +899,11 @@ function renderGrid(){
 /* ── Form helpers ── */
 function dimFlds(){
   return h('div',{'class':'form-row3'},
-    fld('Length (cm)',h('input',{'class':'inp',type:'number',min:'0',placeholder:'0',value:S.form.length,
+    fld('Length (cm)',h('input',{'class':'inp',type:'number',id:'f-length',min:'0',placeholder:'0',value:S.form.length,
       oninput:function(e){S.form.length=e.target.value;}})),
-    fld('Width (cm)',h('input',{'class':'inp',type:'number',min:'0',placeholder:'0',value:S.form.width,
+    fld('Width (cm)',h('input',{'class':'inp',type:'number',id:'f-width',min:'0',placeholder:'0',value:S.form.width,
       oninput:function(e){S.form.width=e.target.value;}})),
-    fld('Height (cm)',h('input',{'class':'inp',type:'number',min:'0',placeholder:'0',value:S.form.height,
+    fld('Height (cm)',h('input',{'class':'inp',type:'number',id:'f-height',min:'0',placeholder:'0',value:S.form.height,
       oninput:function(e){S.form.height=e.target.value;}}))
   );
 }
@@ -906,23 +926,23 @@ function categoryFld(onChange){
 
 function renderFormBody(){
   return [
-    fld('Style Number *',h('input',{'class':'inp',type:'text',placeholder:'e.g. HB-2024-001',value:S.form.styleNo,
+    fld('Style Number *',h('input',{'class':'inp',type:'text',id:'f-styleNo',placeholder:'e.g. HB-2024-001',value:S.form.styleNo,
       oninput:function(e){S.form.styleNo=e.target.value;}})),
     categoryFld(),
-    fld('Brand',mkCombo(getBrandOptions(),S.form.brand,function(v){S.form.brand=v;},'Type or choose brand')),
+    fld('Brand',mkCombo(getBrandOptions(),S.form.brand,function(v){S.form.brand=v;},'Type or choose brand','f-brand')),
     h('div',{'class':'form-row'},
       h('div',null,
-        fld('Leather',mkCombo(getLeatherOptions(),S.form.leather,function(v){S.form.leather=v;},'Type or choose leather'))
+        fld('Leather',mkCombo(getLeatherOptions(),S.form.leather,function(v){S.form.leather=v;},'Type or choose leather','f-leather'))
       ),
       h('div',null,
-        fld('Colour',mkCombo(getColourOptions(),S.form.colour,function(v){S.form.colour=v;},'Type or choose colour'))
+        fld('Colour',mkCombo(getColourOptions(),S.form.colour,function(v){S.form.colour=v;},'Type or choose colour','f-colour'))
       )
     ),
     h('div',{'class':'form-row'},
       h('div',null,
-        fld('Style / Type',mkCombo(getTypeOptions(S.form.category),S.form.type,function(v){S.form.type=v;},'Type or choose style'))
+        fld('Style / Type',mkCombo(getTypeOptions(S.form.category),S.form.type,function(v){S.form.type=v;},'Type or choose style','f-type'))
       ),
-      fld('Sex',mkSelect(SEX_OPTIONS,S.form.sex,function(e){S.form.sex=e.target.value;},'Select'))
+      fld('Sex',mkSelect(SEX_OPTIONS,S.form.sex,function(e){S.form.sex=e.target.value;},'Select','f-sex'))
     ),
     h('div',{'class':'sec-title',style:{marginTop:'6px'}},'Dimensions'),
     dimFlds(),
@@ -933,14 +953,14 @@ function renderFormBody(){
 function renderEditFormBody(p){
   return [
     categoryFld(),
-    fld('Brand',mkCombo(getBrandOptions(),S.form.brand,function(v){S.form.brand=v;},'Type or choose brand')),
+    fld('Brand',mkCombo(getBrandOptions(),S.form.brand,function(v){S.form.brand=v;},'Type or choose brand','f-brand')),
     h('div',{'class':'form-row'},
-      h('div',null,fld('Leather',mkCombo(getLeatherOptions(),S.form.leather,function(v){S.form.leather=v;},'Type or choose leather'))),
-      h('div',null,fld('Colour',mkCombo(getColourOptions(),S.form.colour,function(v){S.form.colour=v;},'Type or choose colour')))
+      h('div',null,fld('Leather',mkCombo(getLeatherOptions(),S.form.leather,function(v){S.form.leather=v;},'Type or choose leather','f-leather'))),
+      h('div',null,fld('Colour',mkCombo(getColourOptions(),S.form.colour,function(v){S.form.colour=v;},'Type or choose colour','f-colour')))
     ),
     h('div',{'class':'form-row'},
-      h('div',null,fld('Style / Type',mkCombo(getTypeOptions(S.form.category),S.form.type,function(v){S.form.type=v;},'Type or choose style'))),
-      fld('Sex',mkSelect(SEX_OPTIONS,S.form.sex,function(e){S.form.sex=e.target.value;},'Select'))
+      h('div',null,fld('Style / Type',mkCombo(getTypeOptions(S.form.category),S.form.type,function(v){S.form.type=v;},'Type or choose style','f-type'))),
+      fld('Sex',mkSelect(SEX_OPTIONS,S.form.sex,function(e){S.form.sex=e.target.value;},'Select','f-sex'))
     ),
     h('div',{'class':'sec-title',style:{marginTop:'6px'}},'Dimensions'),
     dimFlds(),
@@ -961,7 +981,7 @@ function renderAddModal(){
       body,
       h('div',{'class':'modal-ftr'},
         h('button',{'class':'btn-sec',onclick:function(){setState({modal:null});}},'\xd7 Cancel'),
-        h('button',{'class':'btn-primary',onclick:saveProduct,disabled:S.saving||undefined},
+        h('button',{'class':'btn-primary',onclick:saveProduct},
           S.saving?[h('span',{'class':'spin'}),'Saving...']:'Save Style'
         )
       )
@@ -1060,7 +1080,7 @@ function renderEditModal(){
       body,
       h('div',{'class':'modal-ftr'},
         h('button',{'class':'btn-sec',onclick:function(){setState({modal:'detail'});}},'\xd7 Cancel'),
-        h('button',{'class':'btn-primary',onclick:saveEdit,disabled:S.saving||undefined},
+        h('button',{'class':'btn-primary',onclick:saveEdit},
           S.saving?[h('span',{'class':'spin'}),'Saving...']:'Save Changes'
         )
       )
