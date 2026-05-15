@@ -393,9 +393,14 @@ function signIn(){
 function signOut(){
   if(!msalApp||!S.msAccount) return;
   logActivity('logout','Signed out',S.vaultUser?S.vaultUser.name:'');
-  msalApp.logoutPopup({account:S.msAccount})
-    .catch(function(){})
-    .finally(function(){ setState({msAccount:null,vaultUser:null,products:{},modal:null,tab:'products',loginError:''}); });
+  // Clear local MSAL cache for this account only — no popup, no Microsoft page
+  var account=S.msAccount;
+  try{
+    // Remove all cached tokens for this account
+    msalApp.clearCache();
+  } catch(e){}
+  // Clear state immediately — no popup needed
+  setState({msAccount:null,vaultUser:null,products:{},modal:null,tab:'products',loginError:''});
 }
 
 /* ── Helpers ── */
