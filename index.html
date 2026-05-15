@@ -272,6 +272,13 @@ function getColourOptions(){
   var all=defs.concat(used);
   return all.filter(function(v,i){return all.indexOf(v)===i;}).sort();
 }
+function getBrandOptions(){
+  var defs=['JC International'];
+  var used=Object.values(getProducts()).map(function(p){return p.brand;}).filter(Boolean);
+  var all=defs.concat(used);
+  return all.filter(function(v,i){return all.indexOf(v)===i;}).sort();
+}
+
 function getTypeOptions(cat){
   var defs=cat==='Wallet'?WALLET_TYPES:BAG_TYPES;
   var used=Object.values(getProducts()).filter(function(p){return p.category===cat;}).map(function(p){return p.type;}).filter(Boolean);
@@ -308,7 +315,7 @@ var S={
   tab:'products',modal:null,selected:null,lightbox:null,
   toast:null,toastTimer:null,saving:false,
   loginLoading:false,loginError:'',
-  form:{styleNo:'',category:'Bag',leather:'',colour:'',type:'',sex:'',length:'',width:'',height:''},
+  form:{styleNo:'',category:'Bag',brand:'',leather:'',colour:'',type:'',sex:'',length:'',width:'',height:''},
   pendingImages:[]
 };
 
@@ -383,8 +390,45 @@ function handleFilesPending(files){
   Promise.all(arr.map(readFile)).then(function(dataUrls){
     var items=arr.map(function(f,i){return{name:f.name,dataUrl:dataUrls[i]};});
     S.pendingImages=S.pendingImages.concat(items);
-    setState({});
+    // Refresh only the pending gallery, NOT the whole modal (avoids losing form input values)
+    refreshPendingGallery();
   });
+}
+
+function refreshPendingGallery(){
+  var container=document.getElementById('pending-gallery-wrap');
+  if(!container) return; // gallery not visible, nothing to do
+  container.innerHTML='';
+  if(S.pendingImages.length===0){
+    container.style.display='none';
+    return;
+  }
+  container.style.display='';
+  var title=document.createElement('div');
+  title.className='sec-title';
+  title.textContent='Ready to upload ('+S.pendingImages.length+' image'+(S.pendingImages.length>1?'s':'')+')';
+  container.appendChild(title);
+  var gallery=document.createElement('div');
+  gallery.className='img-gallery';
+  S.pendingImages.forEach(function(p,i){
+    var th=document.createElement('div');
+    th.className='thumb';
+    var img=document.createElement('img');
+    img.src=p.dataUrl; img.alt='';
+    th.appendChild(img);
+    (function(idx){
+      var del=document.createElement('button');
+      del.className='thumb-del';
+      del.textContent='\xd7';
+      del.onclick=function(){
+        S.pendingImages.splice(idx,1);
+        refreshPendingGallery();
+      };
+      th.appendChild(del);
+    })(i);
+    gallery.appendChild(th);
+  });
+  container.appendChild(gallery);
 }
 
 function getFiltered(){
@@ -409,7 +453,7 @@ function saveProduct(){
   var ex=all[key]||{};
   var dims=[S.form.length,S.form.width,S.form.height].filter(Boolean).join(' x ');
   all[key]={
-    styleNo:key,category:S.form.category,leather:S.form.leather,colour:S.form.colour,
+    styleNo:key,category:S.form.category,brand:S.form.brand,leather:S.form.leather,colour:S.form.colour,
     type:S.form.type,sex:S.form.sex,length:S.form.length,width:S.form.width,height:S.form.height,
     dimensions:dims,images:(ex.images||[]).concat(S.pendingImages.map(function(p){return p.dataUrl;})),
     updatedBy:S.vaultUser.name,updatedAt:Date.now(),
@@ -417,7 +461,7 @@ function saveProduct(){
   };
   dbSet(K_PRODUCTS,all);
   logActivity('add','Added style '+key,S.vaultUser.name);
-  setState({products:all,modal:null,pendingImages:[],saving:false,form:{styleNo:'',category:'Bag',leather:'',colour:'',type:'',sex:'',length:'',width:'',height:''}});
+  setState({products:all,modal:null,pendingImages:[],saving:false,form:{styleNo:'',category:'Bag',brand:'',leather:'',colour:'',type:'',sex:'',length:'',width:'',height:''}});
   showToast('Style '+key+' saved');
 }
 
@@ -428,7 +472,7 @@ function saveEdit(){
   var ex=all[key]||S.selected;
   var dims=[S.form.length,S.form.width,S.form.height].filter(Boolean).join(' x ');
   all[key]=Object.assign({},ex,{
-    category:S.form.category,leather:S.form.leather,colour:S.form.colour,
+    category:S.form.category,brand:S.form.brand,leather:S.form.leather,colour:S.form.colour,
     type:S.form.type,sex:S.form.sex,length:S.form.length,width:S.form.width,height:S.form.height,
     dimensions:dims,images:(ex.images||[]).concat(S.pendingImages.map(function(p){return p.dataUrl;})),
     updatedBy:S.vaultUser.name,updatedAt:Date.now()
@@ -609,22 +653,31 @@ function renderImgSection(existing,allowDel,styleKey){
     frag.appendChild(g);
   }
 
-  if(S.pendingImages.length>0){
-    frag.appendChild(h('div',{'class':'sec-title'},'Ready to upload ('+S.pendingImages.length+' image'+(S.pendingImages.length>1?'s':'')+')'));
-    var pg=h('div',{'class':'img-gallery'});
+  // Pending gallery rendered into a dedicated container so it can update without re-rendering the whole modal
+  var pendingWrap=document.createElement('div');
+  pendingWrap.id='pending-gallery-wrap';
+  if(S.pendingImages.length===0){ pendingWrap.style.display='none'; }
+  else {
+    var ptitle=document.createElement('div');
+    ptitle.className='sec-title';
+    ptitle.textContent='Ready to upload ('+S.pendingImages.length+' image'+(S.pendingImages.length>1?'s':'')+')';
+    pendingWrap.appendChild(ptitle);
+    var pg=document.createElement('div');
+    pg.className='img-gallery';
     S.pendingImages.forEach(function(p,i){
-      var th=h('div',{'class':'thumb'},h('img',{src:p.dataUrl,alt:''}));
+      var th=document.createElement('div'); th.className='thumb';
+      var img=document.createElement('img'); img.src=p.dataUrl; img.alt='';
+      th.appendChild(img);
       (function(idx){
-        var del=h('button',{'class':'thumb-del',onclick:function(){
-          S.pendingImages.splice(idx,1);
-          setState({});
-        }},'\xd7');
+        var del=document.createElement('button'); del.className='thumb-del'; del.textContent='\xd7';
+        del.onclick=function(){ S.pendingImages.splice(idx,1); refreshPendingGallery(); };
         th.appendChild(del);
       })(i);
       pg.appendChild(th);
     });
-    frag.appendChild(pg);
+    pendingWrap.appendChild(pg);
   }
+  frag.appendChild(pendingWrap);
 
   frag.appendChild(h('div',{'class':'sec-title'},'Add Images'));
 
@@ -669,7 +722,6 @@ function render(){
   if(S.modal==='add')                  root.appendChild(renderAddModal());
   if(S.modal==='detail'&&S.selected)   root.appendChild(renderDetailModal());
   if(S.modal==='edit'&&S.selected)     root.appendChild(renderEditModal());
-  if(S.lightbox)                        root.appendChild(renderLightbox());
   if(S.toast)                           root.appendChild(h('div',{'class':'toast'},S.toast));
 }
 
@@ -748,7 +800,7 @@ function renderToolbar(){
     mkFlt('All Colours','colour',getColourOptions())
   ];
   if(canEdit()) els.push(h('button',{'class':'btn-add',onclick:function(){
-    setState({modal:'add',form:{styleNo:'',category:'Bag',leather:'',colour:'',type:'',sex:'',length:'',width:'',height:''},pendingImages:[]});
+    setState({modal:'add',form:{styleNo:'',category:'Bag',brand:'',leather:'',colour:'',type:'',sex:'',length:'',width:'',height:''},pendingImages:[]});
   }},'+ Add Style'));
   return h('div',{'class':'toolbar'},els);
 }
@@ -777,6 +829,7 @@ function renderGrid(){
     }
     var tags=h('div',{'class':'tags'});
     if(p.category) tags.appendChild(h('span',{'class':'tag g'},p.category));
+    if(p.brand)    tags.appendChild(h('span',{'class':'tag g'},p.brand));
     if(p.type)     tags.appendChild(h('span',{'class':'tag'},p.type));
     if(p.leather)  tags.appendChild(h('span',{'class':'tag'},p.leather));
     if(p.colour)   tags.appendChild(h('span',{'class':'tag'},p.colour));
@@ -826,6 +879,7 @@ function renderFormBody(){
     fld('Style Number *',h('input',{'class':'inp',type:'text',placeholder:'e.g. HB-2024-001',value:S.form.styleNo,
       oninput:function(e){S.form.styleNo=e.target.value;}})),
     categoryFld(),
+    fld('Brand',mkCombo(getBrandOptions(),S.form.brand,function(v){S.form.brand=v;},'Type or choose brand')),
     h('div',{'class':'form-row'},
       h('div',null,
         fld('Leather',mkCombo(getLeatherOptions(),S.form.leather,function(v){S.form.leather=v;},'Type or choose leather'))
@@ -849,6 +903,7 @@ function renderFormBody(){
 function renderEditFormBody(p){
   return [
     categoryFld(),
+    fld('Brand',mkCombo(getBrandOptions(),S.form.brand,function(v){S.form.brand=v;},'Type or choose brand')),
     h('div',{'class':'form-row'},
       h('div',null,fld('Leather',mkCombo(getLeatherOptions(),S.form.leather,function(v){S.form.leather=v;},'Type or choose leather'))),
       h('div',null,fld('Colour',mkCombo(getColourOptions(),S.form.colour,function(v){S.form.colour=v;},'Type or choose colour')))
@@ -895,7 +950,7 @@ function renderDetailModal(){
     var dg=h('div',{'class':'detail-grid'});
     p.images.forEach(function(img){
       var d=h('div',{'class':'detail-img'},h('img',{src:img,alt:''}));
-      d.addEventListener('click',function(){setState({lightbox:img});});
+      d.addEventListener('click',function(){showLightbox(img);});
       dg.appendChild(d);
     });
     body.appendChild(dg);
@@ -923,7 +978,7 @@ function renderDetailModal(){
 
   body.appendChild(h('div',{'class':'sec-title'},'Attributes'));
   var attrs=h('div',{'class':'attrs'});
-  [['Category',p.category],['Leather',p.leather],['Colour',p.colour],['Style / Type',p.type],['Sex',p.sex],
+  [['Category',p.category],['Brand',p.brand],['Leather',p.leather],['Colour',p.colour],['Style / Type',p.type],['Sex',p.sex],
    ['Length',p.length?(p.length+' cm'):null],['Width',p.width?(p.width+' cm'):null],['Height',p.height?(p.height+' cm'):null]
   ].forEach(function(pair){
     if(pair[1]) attrs.appendChild(h('div',{'class':'attr'},h('div',{'class':'attr-lbl'},pair[0]),h('div',{'class':'attr-val'},pair[1])));
@@ -944,7 +999,7 @@ function renderDetailModal(){
     setState({modal:null});
   }},'Close')];
   if(canEdit()) ftrBtns.unshift(h('button',{'class':'btn-primary',onclick:function(){
-    setState({modal:'edit',form:{styleNo:p.styleNo,category:p.category||'Bag',leather:p.leather||'',colour:p.colour||'',type:p.type||'',sex:p.sex||'',length:p.length||'',width:p.width||'',height:p.height||''},pendingImages:[]});
+    setState({modal:'edit',form:{styleNo:p.styleNo,category:p.category||'Bag',brand:p.brand||'',leather:p.leather||'',colour:p.colour||'',type:p.type||'',sex:p.sex||'',length:p.length||'',width:p.width||'',height:p.height||''},pendingImages:[]});
   }},'Edit'));
   if(isAdmin()) ftrBtns.unshift(h('button',{'class':'btn-del',onclick:function(){deleteProduct(p.styleNo);}},'\xd7 Delete'));
 
@@ -985,11 +1040,33 @@ function renderEditModal(){
   return overlay;
 }
 
+function showLightbox(src){
+  // Remove any existing lightbox
+  var existing=document.getElementById('vault-lightbox');
+  if(existing) existing.remove();
+
+  var lb=document.createElement('div');
+  lb.id='vault-lightbox';
+  lb.className='lightbox';
+  lb.onclick=function(){ lb.remove(); S.lightbox=null; };
+
+  var closeBtn=document.createElement('button');
+  closeBtn.className='lb-close';
+  closeBtn.textContent='X';
+  closeBtn.onclick=function(e){ e.stopPropagation(); lb.remove(); S.lightbox=null; };
+
+  var img=document.createElement('img');
+  img.src=src; img.alt='';
+  img.onclick=function(e){ e.stopPropagation(); };
+
+  lb.appendChild(closeBtn);
+  lb.appendChild(img);
+  document.body.appendChild(lb);
+}
+
 function renderLightbox(){
-  return h('div',{'class':'lightbox',onclick:function(){setState({lightbox:null});}},
-    h('button',{'class':'lb-close',onclick:function(){setState({lightbox:null});}},'X'),
-    h('img',{src:S.lightbox,alt:'',onclick:function(e){e.stopPropagation();}})
-  );
+  // No longer used in render() — lightbox is shown directly via showLightbox()
+  return null;
 }
 
 /* ── Admin Panel ── */
